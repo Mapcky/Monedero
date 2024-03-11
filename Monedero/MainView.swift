@@ -14,6 +14,7 @@ class MainView: UIViewController {
     @IBOutlet weak var mxnLabel: UILabel!
     @IBOutlet weak var solLabel: UILabel!
     let myBalance = Balance(ars: 0, usd: 10000, mxn: 0, sol: 0)
+    let cotization = Cotization()
     override func viewDidLoad() {
         super.viewDidLoad()
         arsLabel.text = "$Ars    \(String(myBalance.ars))"
@@ -33,19 +34,19 @@ class MainView: UIViewController {
         if let destino = segue.destination as? Trader {
             if let buttonPressed = sender as? UIButton {
                 if buttonPressed.tag == 0 {
-                    destino.country = "Argentina"
+                    destino.countryCotization = CotizacionPais(pais: .Arg, exc1: cotization.arsToUsd, exc2: cotization.arsToMxn, exc3: cotization.arsToSol, excI1: cotization.usdToArs, excI2: cotization.mxnToArs, excI3: cotization.solToArs)
                     destino.balance = myBalance.ars
                 }
                 else if buttonPressed.tag == 1{
-                    destino.country = "USA"
+                    destino.countryCotization = CotizacionPais(pais: .Usa, exc1: cotization.usdToArs, exc2: cotization.usdToMxn, exc3: cotization.usdToSol, excI1: cotization.arsToUsd, excI2: cotization.mxnToUsd, excI3: cotization.solToUsd)
                     destino.balance = myBalance.usd
                 }
                 else if buttonPressed.tag == 2{
-                    destino.country = "Mexico"
+                    destino.countryCotization = CotizacionPais(pais: .Mex, exc1: cotization.mxnToArs, exc2: cotization.mxnToUsd, exc3: cotization.mxnToSol, excI1: cotization.arsToMxn, excI2: cotization.usdToMxn, excI3: cotization.solToMxn)
                     destino.balance = myBalance.mxn
                 }
                 else if buttonPressed.tag == 3{
-                    destino.country = "Peru"
+                    destino.countryCotization = CotizacionPais(pais: .Per, exc1: cotization.solToArs, exc2: cotization.solToUsd, exc3: cotization.solToMxn, excI1: cotization.arsToSol, excI2: cotization.usdToSol, excI3: cotization.mxnToSol)
                     destino.balance = myBalance.sol
                 }
             }

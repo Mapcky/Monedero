@@ -19,10 +19,12 @@ class Trader: UIViewController {
      var destiny2: Float = 0
      var destiny3: Float = 0*/
     
-    var country: String?
     var balance: Int?
+    var countryCotization: CotizacionPais?
     
-    let cotizacion = Cotization()
+    
+    
+   // let cotizacion = Cotization()
     //parte Superior
     @IBOutlet weak var myImage: UIImageView!
     @IBOutlet weak var balanceNumber: UILabel!
@@ -77,111 +79,99 @@ class Trader: UIViewController {
     
     
     @IBAction func editando(_ sender: Any) {
-        if let buttonPressed = sender as? UITextField {
-            switch buttonPressed.tag {
-            case 0:
-                if let origin6 = fOrigin1.text {
-                    let calculo = (Float(origin6) ?? 0) * cotizacion.arsToUsd
-                    fDestiny1.text = String(calculo)
+        if let countryObject = countryCotization {
+            if let fieldModify = sender as? UITextField {
+                switch fieldModify.tag {
+                case 0:
+                    if let change = fOrigin1.text {
+                        let calculo = (Float(change) ?? 0) * countryObject.exc1
+                        fDestiny1.text = String(calculo)
+                    }
+                    break
+                case 1:
+                    if let change = fOrigin2.text {
+                        let calculo = (Float(change) ?? 0) * countryObject.exc2
+                        fDestiny2.text = String(calculo)
+                    }
+                    break
+                    
+                case 2:
+                    if let change = fOrigin3.text {
+                        let calculo = (Float(change) ?? 0) * countryObject.exc3
+                        fDestiny3.text = String(calculo)
+                    }
+                    break
+         
+                case 3:
+                    if let change = fDestiny1.text {
+                        let calculo = (Float(change) ?? 0) * countryObject.excInverse1
+                        fOrigin1.text = String(calculo)
+                    }
+                    break
+                    
+                case 4:
+                    if let change = fDestiny2.text {
+                        let calculo = (Float(change) ?? 0) * countryObject.excInverse2
+                        fOrigin2.text = String(calculo)
+                    }
+                    break
+                    
+                case 5:
+                    if let change = fDestiny3.text {
+                        let calculo = (Float(change) ?? 0) * countryObject.excInverse3
+                        fOrigin3.text = String(calculo)
+                    }
+                    break
+                    
+                default:
+                    break
                 }
-                break
-            case 1:
-                if let origin6 = fOrigin2.text {
-                    let calculo = (Float(origin6) ?? 0) * cotizacion.arsToMxn
-                    fDestiny2.text = String(calculo)
-                }
-                break
-                
-            case 2:
-                if let origin6 = fOrigin3.text {
-                    let calculo = (Float(origin6) ?? 0) * cotizacion.arsToSol
-                    fDestiny3.text = String(calculo)
-                }
-                break
-                
-            case 3:
-                if let origin6 = fDestiny1.text {
-                    let calculo = (Float(origin6) ?? 0) * cotizacion.usdToArs
-                    fOrigin1.text = String(calculo)
-                }
-                break
-                
-            case 4:
-                if let origin6 = fDestiny2.text {
-                    let calculo = (Float(origin6) ?? 0) * cotizacion.mxnToArs
-                    fOrigin2.text = String(calculo)
-                }
-                break
-                
-            case 5:
-                if let origin6 = fDestiny3.text {
-                    let calculo = (Float(origin6) ?? 0) * cotizacion.solToArs
-                    fOrigin3.text = String(calculo)
-                }
-                break
-                
-            default:
-                break
             }
         }
     }
     
     func countryView (){
-        switch country {
-        case "Argentina": 
-            myImage.image = UIImage(named: "Argentina")
-            //text field destiny
-            fDestiny1.text = String(cotizacion.arsToUsd)
-            fDestiny2.text = String(cotizacion.arsToMxn)
-            fDestiny3.text = String(cotizacion.arsToSol)
-            
-            //labels
-            (label1.text, label3.text, label5.text) = ("ARS","ARS","ARS")
-            label2.text = "USD"
-            label4.text = "MXN"
-            label6.text = "SOL"
-            break
-        case "USA":
-            myImage.image = UIImage(named: "EEUU")
-            fDestiny1.text = String(cotizacion.usdToArs)
-            fDestiny2.text = String(cotizacion.usdToMxn)
-            fDestiny3.text = String(cotizacion.usdToSol)
-            
-            //labels
-            (label1.text, label3.text, label5.text) = ("USD","USD","USD")
-            label2.text = "ARS"
-            label4.text = "MXN"
-            label6.text = "SOL"
-            break
-        case "Mexico":
-            myImage.image = UIImage(named: "Mexico")
-            fDestiny1.text = String(cotizacion.mxnToArs)
-            fDestiny2.text = String(cotizacion.mxnToUsd)
-            fDestiny3.text = String(cotizacion.mxnToSol)
-            
-            //labels
-            (label1.text, label3.text, label5.text) = ("MXN","MXN","MXN")
-            label2.text = "ARS"
-            label4.text = "USD"
-            label6.text = "SOL"
-            break
-        case "Peru":
-            myImage.image = UIImage(named: "Peru")
-            fDestiny1.text = String(cotizacion.solToArs)
-            fDestiny2.text = String(cotizacion.solToUsd)
-            fDestiny3.text = String(cotizacion.solToMxn)
-            
-            //labels
-            (label1.text, label3.text, label5.text) = ("SOL","SOL","SOL")
-            label2.text = "ARS"
-            label4.text = "USD"
-            label6.text = "MXN"
-            break
-        default:
-            balanceNumber.text = "ERROR"
-            break
-        }
+        if let countryObject = countryCotization {
+            switch countryObject.country {
+            case .Arg:
+                myImage.image = UIImage(named: "Argentina")
+                //labels
+                (label1.text, label3.text, label5.text) = ("ARS","ARS","ARS")
+                label2.text = "USD"
+                label4.text = "MXN"
+                label6.text = "SOL"
+                
+                break
+            case .Usa:
+                myImage.image = UIImage(named: "EEUU")
+                //labels
+                (label1.text, label3.text, label5.text) = ("USD","USD","USD")
+                label2.text = "ARS"
+                label4.text = "MXN"
+                label6.text = "SOL"
+                break
+            case .Mex:
+                myImage.image = UIImage(named: "Mexico")
+                //labels
+                (label1.text, label3.text, label5.text) = ("MXN","MXN","MXN")
+                label2.text = "ARS"
+                label4.text = "USD"
+                label6.text = "SOL"
+                break
+            case .Per:
+                myImage.image = UIImage(named: "Peru")
+                //labels
+                (label1.text, label3.text, label5.text) = ("SOL","SOL","SOL")
+                label2.text = "ARS"
+                label4.text = "USD"
+                label6.text = "MXN"
+                break
 
-        
-    }
+            }
+            //Fields izq
+            fDestiny1.text = String(countryObject.exc1)
+            fDestiny2.text = String(countryObject.exc2)
+            fDestiny3.text = String(countryObject.exc3)
+            }
+        }
 }

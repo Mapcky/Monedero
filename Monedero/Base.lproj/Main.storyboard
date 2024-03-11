@@ -114,7 +114,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="96.946564885496173" y="-27.464788732394368"/>
+            <point key="canvasLocation" x="315" y="-27"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="tiT-Jt-vOc">
@@ -130,7 +130,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UWf-Ep-ayc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-711" y="-27"/>
+            <point key="canvasLocation" x="-448" y="-27"/>
         </scene>
         <!--Trader-->
         <scene sceneID="46F-dX-y6l">
@@ -356,11 +356,31 @@
                         <outlet property="label5" destination="okY-iP-jAQ" id="7NV-hX-OWM"/>
                         <outlet property="label6" destination="IMB-Xy-a3R" id="9vX-BI-5IX"/>
                         <outlet property="myImage" destination="izm-rM-aKC" id="SqH-K8-gDm"/>
+                        <segue destination="v1t-KP-UUh" kind="show" identifier="endSegue" id="awO-XE-i7b"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hbS-SX-EqC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1093.8931297709923" y="-27.464788732394368"/>
+        </scene>
+        <!--End-->
+        <scene sceneID="q6I-Ab-T6K">
+            <objects>
+                <viewController id="v1t-KP-UUh" customClass="End" customModule="Monedero" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Hcr-r9-1Dk">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="Yns-5G-Pum"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="wSn-uX-yTo"/>
+                    <connections>
+                        <outlet property="controller" destination="wSn-uX-yTo" id="ew6-17-wOj"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="v5b-n5-ya6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1869" y="-27"/>
         </scene>
     </scenes>
     <resources>

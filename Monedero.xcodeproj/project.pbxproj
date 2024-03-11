@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		30271F7F2B9F7C7D002FB1FC /* CotizacionPais.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30271F7E2B9F7C7D002FB1FC /* CotizacionPais.swift */; };
+		30271F812B9F7C8D002FB1FC /* End.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30271F802B9F7C8C002FB1FC /* End.swift */; };
 		3036DE492B99F73200BF5748 /* Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3036DE482B99F73100BF5748 /* Balance.swift */; };
 		3036DE4B2B99FEEC00BF5748 /* Trader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3036DE4A2B99FEEC00BF5748 /* Trader.swift */; };
 		30C6F4A12B9A4E3A0075A239 /* Cotization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C6F4A02B9A4E3A0075A239 /* Cotization.swift */; };
@@ -19,6 +21,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		30271F7E2B9F7C7D002FB1FC /* CotizacionPais.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CotizacionPais.swift; sourceTree = "<group>"; };
+		30271F802B9F7C8C002FB1FC /* End.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = End.swift; sourceTree = "<group>"; };
 		3036DE482B99F73100BF5748 /* Balance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Balance.swift; sourceTree = "<group>"; };
 		3036DE4A2B99FEEC00BF5748 /* Trader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trader.swift; sourceTree = "<group>"; };
 		30C6F4A02B9A4E3A0075A239 /* Cotization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cotization.swift; sourceTree = "<group>"; };
@@ -72,6 +76,8 @@
 				3036DE482B99F73100BF5748 /* Balance.swift */,
 				3036DE4A2B99FEEC00BF5748 /* Trader.swift */,
 				30C6F4A02B9A4E3A0075A239 /* Cotization.swift */,
+				30271F7E2B9F7C7D002FB1FC /* CotizacionPais.swift */,
+				30271F802B9F7C8C002FB1FC /* End.swift */,
 			);
 			path = Monedero;
 			sourceTree = "<group>";
@@ -151,7 +157,9 @@
 				30FC5F512B97D1C5005A4CC6 /* AppDelegate.swift in Sources */,
 				3036DE4B2B99FEEC00BF5748 /* Trader.swift in Sources */,
 				3036DE492B99F73200BF5748 /* Balance.swift in Sources */,
+				30271F7F2B9F7C7D002FB1FC /* CotizacionPais.swift in Sources */,
 				30FC5F532B97D1C5005A4CC6 /* SceneDelegate.swift in Sources */,
+				30271F812B9F7C8D002FB1FC /* End.swift in Sources */,
 				30C6F4A12B9A4E3A0075A239 /* Cotization.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
