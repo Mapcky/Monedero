@@ -78,38 +78,50 @@ class Trader: UIViewController {
     
     @IBAction func editando(_ sender: Any) {
         if let buttonPressed = sender as? UITextField {
-            if buttonPressed.tag == 0 {
+            switch buttonPressed.tag {
+            case 0:
                 if let origin6 = fOrigin1.text {
                     let calculo = (Float(origin6) ?? 0) * cotizacion.arsToUsd
                     fDestiny1.text = String(calculo)
                 }
-            }else if buttonPressed.tag == 1 {
+                break
+            case 1:
                 if let origin6 = fOrigin2.text {
                     let calculo = (Float(origin6) ?? 0) * cotizacion.arsToMxn
                     fDestiny2.text = String(calculo)
                 }
+                break
                 
-            }else if buttonPressed.tag == 2 {
+            case 2:
                 if let origin6 = fOrigin3.text {
                     let calculo = (Float(origin6) ?? 0) * cotizacion.arsToSol
                     fDestiny3.text = String(calculo)
                 }
+                break
                 
-            }else if buttonPressed.tag == 3 {
+            case 3:
                 if let origin6 = fDestiny1.text {
                     let calculo = (Float(origin6) ?? 0) * cotizacion.usdToArs
                     fOrigin1.text = String(calculo)
                 }
-            }else if buttonPressed.tag == 4 {
+                break
+                
+            case 4:
                 if let origin6 = fDestiny2.text {
                     let calculo = (Float(origin6) ?? 0) * cotizacion.mxnToArs
                     fOrigin2.text = String(calculo)
                 }
-            }else if buttonPressed.tag == 5 {
+                break
+                
+            case 5:
                 if let origin6 = fDestiny3.text {
                     let calculo = (Float(origin6) ?? 0) * cotizacion.solToArs
                     fOrigin3.text = String(calculo)
                 }
+                break
+                
+            default:
+                break
             }
         }
     }
