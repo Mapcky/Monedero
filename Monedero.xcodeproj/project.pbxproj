@@ -47,6 +47,44 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3026102C2B9FA76700890150 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				30FC5F562B97D1C5005A4CC6 /* Main.storyboard */,
+				30FC5F5B2B97D1C8005A4CC6 /* LaunchScreen.storyboard */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3026102D2B9FA77B00890150 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				3036DE4A2B99FEEC00BF5748 /* Trader.swift */,
+				30271F802B9F7C8C002FB1FC /* End.swift */,
+				30FC5F542B97D1C5005A4CC6 /* MainView.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		3026102E2B9FA78B00890150 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				30FC5F502B97D1C5005A4CC6 /* AppDelegate.swift */,
+				30FC5F522B97D1C5005A4CC6 /* SceneDelegate.swift */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		3026102F2B9FA7AD00890150 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				3036DE482B99F73100BF5748 /* Balance.swift */,
+				30C6F4A02B9A4E3A0075A239 /* Cotization.swift */,
+				30271F7E2B9F7C7D002FB1FC /* CotizacionPais.swift */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
 		30FC5F442B97D1C5005A4CC6 = {
 			isa = PBXGroup;
 			children = (
@@ -66,18 +104,12 @@
 		30FC5F4F2B97D1C5005A4CC6 /* Monedero */ = {
 			isa = PBXGroup;
 			children = (
-				30FC5F502B97D1C5005A4CC6 /* AppDelegate.swift */,
-				30FC5F522B97D1C5005A4CC6 /* SceneDelegate.swift */,
-				30FC5F542B97D1C5005A4CC6 /* MainView.swift */,
-				30FC5F562B97D1C5005A4CC6 /* Main.storyboard */,
+				3026102F2B9FA7AD00890150 /* Classes */,
+				3026102E2B9FA78B00890150 /* Base */,
+				3026102C2B9FA76700890150 /* Views */,
+				3026102D2B9FA77B00890150 /* Controller */,
 				30FC5F592B97D1C8005A4CC6 /* Assets.xcassets */,
-				30FC5F5B2B97D1C8005A4CC6 /* LaunchScreen.storyboard */,
 				30FC5F5E2B97D1C8005A4CC6 /* Info.plist */,
-				3036DE482B99F73100BF5748 /* Balance.swift */,
-				3036DE4A2B99FEEC00BF5748 /* Trader.swift */,
-				30C6F4A02B9A4E3A0075A239 /* Cotization.swift */,
-				30271F7E2B9F7C7D002FB1FC /* CotizacionPais.swift */,
-				30271F802B9F7C8C002FB1FC /* End.swift */,
 			);
 			path = Monedero;
 			sourceTree = "<group>";

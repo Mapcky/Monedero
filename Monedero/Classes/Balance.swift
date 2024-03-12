@@ -8,13 +8,13 @@
 import Foundation
 
 class Balance {
-    let ars: Int
-    let usd: Int
-    let mxn: Int
-    let sol: Int
+    var ars: Float
+    var usd: Float
+    var mxn: Float
+    var sol: Float
     
     
-    init(ars: Int, usd: Int, mxn: Int, sol: Int) {
+    init(ars: Float, usd: Float, mxn: Float, sol: Float) {
         self.ars = ars
         self.usd = usd
         self.mxn = mxn
