@@ -24,7 +24,7 @@ class Trader: UIViewController {
     
     
     
-   // let cotizacion = Cotization()
+    // let cotizacion = Cotization()
     //parte Superior
     @IBOutlet weak var myImage: UIImageView!
     @IBOutlet weak var balanceNumber: UILabel!
@@ -72,60 +72,226 @@ class Trader: UIViewController {
     
     
     @IBAction func editando(_ sender: Any) {
-        if let countryObject = countryCotization, let fieldModify = sender as? UITextField {
-                switch fieldModify.tag {
-                case 0:
-                    if let change = fOrigin1.text, let blns = balance {
-                        let calculo = (Float(change) ?? 0) * countryObject.exchange1
-                        fDestiny1.text = String(format:"%.2f",calculo)
-                        if countryObject.country == .Arg{
-                            if (Float(change) ?? 0) > blns.ars {
-                                button1.isEnabled = false
-                            } else {
-                                button1.isEnabled = true
-                            }
+        if let countryObject = countryCotization, let fieldModify = sender as? UITextField,
+           let blns = balance{
+            switch fieldModify.tag {
+            case 0:
+                if let change = fOrigin1.text {
+                    let calculo = (Float(change) ?? 0) * countryObject.exchange1
+                    fDestiny1.text = String(format:"%.2f",calculo)
+                    if countryObject.country == .Arg{
+                        if (Float(change) ?? 0) > blns.ars {
+                            button1.isEnabled = false
+                        } else {
+                            button1.isEnabled = true
                         }
-                        
                     }
-                    break
-                case 1:
-                    if let change = fOrigin2.text {
-                        let calculo = (Float(change) ?? 0) * countryObject.exchange2
-                        fDestiny2.text = String(format:"%.2f",calculo)
+                    if countryObject.country == .Usa{
+                        if (Float(change) ?? 0) > blns.usd {
+                            button1.isEnabled = false
+                        } else {
+                            button1.isEnabled = true
+                        }
                     }
-                    break
+                    if countryObject.country == .Mex{
+                        if (Float(change) ?? 0) > blns.mxn {
+                            button1.isEnabled = false
+                        } else {
+                            button1.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Per{
+                        if (Float(change) ?? 0) > blns.sol {
+                            button1.isEnabled = false
+                        } else {
+                            button1.isEnabled = true
+                        }
+                    }
                     
-                case 2:
-                    if let change = fOrigin3.text {
-                        let calculo = (Float(change) ?? 0) * countryObject.exchange3
-                        fDestiny3.text = String(format:"%.2f",calculo)
-                    }
-                    break
-         
-                case 3:
-                    if let change = fDestiny1.text {
-                        let calculo = (Float(change) ?? 0) / countryObject.exchange1
-                        fOrigin1.text = String(format:"%.2f",calculo)
-                    }
-                    break
-                    
-                case 4:
-                    if let change = fDestiny2.text {
-                        let calculo = (Float(change) ?? 0) / countryObject.exchange2
-                        fOrigin2.text = String(format:"%.2f",calculo)
-                    }
-                    break
-                    
-                case 5:
-                    if let change = fDestiny3.text {
-                        let calculo = (Float(change) ?? 0) / countryObject.exchange3
-                        fOrigin3.text = String(format:"%.2f",calculo)
-                    }
-                    break
-                    
-                default:
-                    break
                 }
+                break
+            case 1:
+                if let change = fOrigin2.text {
+                    let calculo = (Float(change) ?? 0) * countryObject.exchange2
+                    fDestiny2.text = String(format:"%.2f",calculo)
+                    if countryObject.country == .Arg{
+                        if (Float(change) ?? 0) > blns.ars {
+                            button2.isEnabled = false
+                        } else {
+                            button2.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Usa{
+                        if (Float(change) ?? 0) > blns.usd {
+                            button2.isEnabled = false
+                        } else {
+                            button2.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Mex{
+                        if (Float(change) ?? 0) > blns.mxn {
+                            button2.isEnabled = false
+                        } else {
+                            button2.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Per{
+                        if (Float(change) ?? 0) > blns.sol {
+                            button2.isEnabled = false
+                        } else {
+                            button2.isEnabled = true
+                        }
+                    }
+                }
+                break
+                
+            case 2:
+                if let change = fOrigin3.text {
+                    let calculo = (Float(change) ?? 0) * countryObject.exchange3
+                    fDestiny3.text = String(format:"%.2f",calculo)
+                    if countryObject.country == .Arg{
+                        if (Float(change) ?? 0) > blns.ars {
+                            button3.isEnabled = false
+                        } else {
+                            button3.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Usa{
+                        if (Float(change) ?? 0) > blns.usd {
+                            button3.isEnabled = false
+                        } else {
+                            button3.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Mex{
+                        if (Float(change) ?? 0) > blns.mxn {
+                            button3.isEnabled = false
+                        } else {
+                            button3.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Per{
+                        if (Float(change) ?? 0) > blns.sol {
+                            button3.isEnabled = false
+                        } else {
+                            button3.isEnabled = true
+                        }
+                    }
+                    
+                }
+                break
+                
+            case 3:
+                if let change = fDestiny1.text {
+                    let calculo = (Float(change) ?? 0) / countryObject.exchange1
+                    fOrigin1.text = String(format:"%.2f",calculo)
+                    if countryObject.country == .Arg{
+                        if (Float(change) ?? 0) > blns.ars {
+                            button1.isEnabled = false
+                        } else {
+                            button1.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Usa{
+                        if (Float(change) ?? 0) > blns.usd {
+                            button1.isEnabled = false
+                        } else {
+                            button1.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Mex{
+                        if (Float(change) ?? 0) > blns.mxn {
+                            button1.isEnabled = false
+                        } else {
+                            button1.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Per{
+                        if (Float(change) ?? 0) > blns.sol {
+                            button1.isEnabled = false
+                        } else {
+                            button1.isEnabled = true
+                        }
+                    }
+                    
+                }
+                break
+                
+            case 4:
+                if let change = fDestiny2.text {
+                    let calculo = (Float(change) ?? 0) / countryObject.exchange2
+                    fOrigin2.text = String(format:"%.2f",calculo)
+                    if countryObject.country == .Arg{
+                        if (Float(change) ?? 0) > blns.ars {
+                            button2.isEnabled = false
+                        } else {
+                            button2.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Usa{
+                        if (Float(change) ?? 0) > blns.usd {
+                            button2.isEnabled = false
+                        } else {
+                            button2.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Mex{
+                        if (Float(change) ?? 0) > blns.mxn {
+                            button2.isEnabled = false
+                        } else {
+                            button2.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Per{
+                        if (Float(change) ?? 0) > blns.sol {
+                            button2.isEnabled = false
+                        } else {
+                            button2.isEnabled = true
+                        }
+                    }
+                    
+                }
+                break
+                
+            case 5:
+                if let change = fDestiny3.text {
+                    let calculo = (Float(change) ?? 0) / countryObject.exchange3
+                    fOrigin3.text = String(format:"%.2f",calculo)
+                    if countryObject.country == .Arg{
+                        if (Float(change) ?? 0) > blns.ars {
+                            button3.isEnabled = false
+                        } else {
+                            button3.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Usa{
+                        if (Float(change) ?? 0) > blns.usd {
+                            button3.isEnabled = false
+                        } else {
+                            button3.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Mex{
+                        if (Float(change) ?? 0) > blns.mxn {
+                            button3.isEnabled = false
+                        } else {
+                            button3.isEnabled = true
+                        }
+                    }
+                    if countryObject.country == .Per{
+                        if (Float(change) ?? 0) > blns.sol {
+                            button3.isEnabled = false
+                        } else {
+                            button3.isEnabled = true
+                        }
+                    }
+                    
+                }
+                break
+                
+            default:
+                break
+            }
         }
     }
     
@@ -151,7 +317,7 @@ class Trader: UIViewController {
                 label6.text = "SOL"
                 //balance
                 balanceNumber.text = "$ \(String(format:"%.2f",myBalance.usd))"
-
+                
                 break
             case .Mex:
                 myImage.image = UIImage(named: "Mexico")
@@ -162,7 +328,7 @@ class Trader: UIViewController {
                 label6.text = "SOL"
                 //balance
                 balanceNumber.text = "$ \(String(format:"%.2f",myBalance.mxn))"
-
+                
                 break
             case .Per:
                 myImage.image = UIImage(named: "Peru")
@@ -173,58 +339,143 @@ class Trader: UIViewController {
                 label6.text = "MXN"
                 //balance
                 balanceNumber.text = "$ \(String(format:"%.2f",myBalance.sol))"
-
+                
                 break
-
+                
             }
             //Fields Derecha
             fDestiny1.text = String(format:"%.3f",countryObject.exchange1)
             fDestiny2.text = String(format:"%.3f",countryObject.exchange2)
             fDestiny3.text = String(format:"%.3f",countryObject.exchange3)
-            }
         }
+    }
     
     
     @IBAction func tradeButton(_ sender: Any) {
-        if let blncs = balance, let change = fOrigin1.text, let change2 = fDestiny1.text {
-            blncs.ars = blncs.ars - (Float(change) ?? 0)
-            blncs.usd = blncs.usd + (Float(change2) ?? 0)
-
-        }
         performSegue(withIdentifier: "endSegue", sender: sender)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destino = segue.destination as? End, let blncs = balance {
-                destino.myBalance = blncs
-                
-       /*     if let buttonPressed = sender as? UIButton {
-                if buttonPressed.tag == 0 {
-                    destino.countryCotization = CotizacionPais(pais: .Arg, exc1: cotization.arsToUsd, exc2: cotization.arsToMxn, exc3: cotization.arsToSol, excI1: cotization.usdToArs, excI2: cotization.mxnToArs, excI3: cotization.solToArs)
-                    destino.balance = myBalance.ars
+        if let destino = segue.destination as? End, let blncs = balance,
+           let countryObject = countryCotization, let buttonPressed = sender as? UIButton{
+            
+            if countryObject.country == .Arg {
+                switch buttonPressed.tag {
+                case 0:
+                    if let change = fOrigin1.text, let change2 = fDestiny1.text {
+                        blncs.ars = blncs.ars - (Float(change) ?? 0)
+                        blncs.usd = blncs.usd + (Float(change2) ?? 0)
+                        destino.myBalance = blncs
+                        break
+                    }
+                case 1:
+                    if let change = fOrigin2.text, let change2 = fDestiny2.text {
+                        blncs.ars = blncs.ars - (Float(change) ?? 0)
+                        blncs.mxn = blncs.mxn + (Float(change2) ?? 0)
+                        destino.myBalance = blncs
+                        break
+                    }
+                    
+                case 2:
+                    if let change = fOrigin3.text, let change2 = fDestiny3.text {
+                        blncs.ars = blncs.ars - (Float(change) ?? 0)
+                        blncs.sol = blncs.sol + (Float(change2) ?? 0)
+                        destino.myBalance = blncs
+                        break
+                    }
+                default:
+                    break
                 }
-                else if buttonPressed.tag == 1{
-                    destino.countryCotization = CotizacionPais(pais: .Usa, exc1: cotization.usdToArs, exc2: cotization.usdToMxn, exc3: cotization.usdToSol, excI1: cotization.arsToUsd, excI2: cotization.mxnToUsd, excI3: cotization.solToUsd)
-                    destino.balance = myBalance.usd
+            }
+            else if countryObject.country == .Usa {
+                switch buttonPressed.tag{
+                case 0:
+                    if let change = fOrigin1.text, let change2 = fDestiny1.text {
+                        blncs.usd = blncs.usd - (Float(change) ?? 0)
+                        blncs.ars = blncs.ars + (Float(change2) ?? 0)
+                    }
+                    destino.myBalance = blncs
+                    break
+                case 1:
+                    if let change = fOrigin2.text, let change2 = fDestiny2.text {
+                        blncs.usd = blncs.usd - (Float(change) ?? 0)
+                        blncs.mxn = blncs.mxn + (Float(change2) ?? 0)
+                        
+                    }
+                    destino.myBalance = blncs
+                    break
+                case 2:
+                    if let change = fOrigin3.text, let change2 = fDestiny3.text {
+                        blncs.usd = blncs.usd - (Float(change) ?? 0)
+                        blncs.sol = blncs.sol + (Float(change2) ?? 0)
+                    }
+                    destino.myBalance = blncs
+                    break
+                default:
+                    break
                 }
-                else if buttonPressed.tag == 2{
-                    destino.countryCotization = CotizacionPais(pais: .Mex, exc1: cotization.mxnToArs, exc2: cotization.mxnToUsd, exc3: cotization.mxnToSol, excI1: cotization.arsToMxn, excI2: cotization.usdToMxn, excI3: cotization.solToMxn)
-                    destino.balance = myBalance.mxn
+            }
+
+            else if countryObject.country == .Mex {
+                switch buttonPressed.tag{
+                case 0:
+                    if let change = fOrigin1.text, let change2 = fDestiny1.text {
+                        blncs.mxn = blncs.mxn - (Float(change) ?? 0)
+                        blncs.ars = blncs.ars + (Float(change2) ?? 0)
+                    }
+                    destino.myBalance = blncs
+                    break
+                case 1:
+                    if let change = fOrigin2.text, let change2 = fDestiny2.text {
+                        blncs.mxn = blncs.mxn - (Float(change) ?? 0)
+                        blncs.usd = blncs.usd + (Float(change2) ?? 0)
+                        print("xd\(blncs.usd)")
+                    }
+                    destino.myBalance = blncs
+                    break
+                case 2:
+                    if let change = fOrigin3.text, let change2 = fDestiny3.text {
+                        blncs.mxn = blncs.mxn - (Float(change) ?? 0)
+                        blncs.sol = blncs.sol + (Float(change2) ?? 0)
+                    }
+                    destino.myBalance = blncs
+                    break
+                default:
+                    break
                 }
-                else if buttonPressed.tag == 3{
-                    destino.countryCotization = CotizacionPais(pais: .Per, exc1: cotization.solToArs, exc2: cotization.solToUsd, exc3: cotization.solToMxn, excI1: cotization.arsToSol, excI2: cotization.usdToSol, excI3: cotization.mxnToSol)
-                    destino.balance = myBalance.sol
-                }*/
+            }
+                                
+            else if countryObject.country == .Per {
+                switch buttonPressed.tag{
+                case 0:
+                    if let change = fOrigin1.text, let change2 = fDestiny1.text {
+                        blncs.sol = blncs.sol - (Float(change) ?? 0)
+                        blncs.ars = blncs.ars + (Float(change2) ?? 0)
+                    }
+                    destino.myBalance = blncs
+                    break
+                case 1:
+                    if let change = fOrigin2.text, let change2 = fDestiny2.text {
+                        blncs.sol = blncs.sol - (Float(change) ?? 0)
+                        blncs.usd = blncs.usd + (Float(change2) ?? 0)
+                    }
+                    destino.myBalance = blncs
+                    break
+                case 2:
+                    if let change = fOrigin3.text, let change2 = fDestiny3.text {
+                        blncs.sol = blncs.sol - (Float(change) ?? 0)
+                        blncs.mxn = blncs.mxn + (Float(change2) ?? 0)
+                    }
+                    destino.myBalance = blncs
+                    break
+                default:
+                    break
+                }
             }
         }
-    
-    //field end editing
+    }
+}
+
 
     
-    
-    
-    
-    
-    
-    
-}
+

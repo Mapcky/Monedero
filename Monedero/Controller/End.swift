@@ -9,12 +9,13 @@ import UIKit
 
 class End: UIViewController {
     
-    var myBalance: Balance? = nil
+    @IBOutlet weak var image: UIImageView!
+    var myBalance: Balance?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         controller.hidesBackButton = true
-        
+        image.image = UIImage(systemName: "checkmark.square.fill")
         
     }
 

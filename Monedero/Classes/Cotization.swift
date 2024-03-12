@@ -25,11 +25,4 @@ class Cotization {
     let solToUsd:Float = 0.27
     let solToMxn:Float = 4.53
     
-    
-    func operationA2Usd(valor:Float) -> Float {
-        let result = valor * arsToUsd
-        return result
-    }
-    
-
 }
