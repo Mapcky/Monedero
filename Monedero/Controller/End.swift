@@ -9,13 +9,35 @@ import UIKit
 
 class End: UIViewController {
     
+    //images
     @IBOutlet weak var image: UIImageView!
+    @IBOutlet weak var downArrow: UIImageView!
+    @IBOutlet weak var upArrow: UIImageView!
+    
+    
+    //labels
+    @IBOutlet weak var downLabel: UILabel!
+    @IBOutlet weak var plusLabel: UILabel!
+    
+    
+    
+    
+    //variables
     var myBalance: Balance?
+    var suma: String?
+    var resta: String?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         controller.hidesBackButton = true
         image.image = UIImage(systemName: "checkmark.square.fill")
+        upArrow.image = UIImage(systemName: "arrow.up")
+        downArrow.image = UIImage(systemName: "arrow.down")
+        if let plus = suma, let minus = resta {
+            downLabel.text = minus
+            plusLabel.text = plus
+        }
         
     }
 

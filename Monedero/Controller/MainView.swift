@@ -14,7 +14,7 @@ class MainView: UIViewController {
     @IBOutlet weak var mxnLabel: UILabel!
     @IBOutlet weak var solLabel: UILabel!
     @IBOutlet weak var navigation: UINavigationItem!
-    var myBalance = Balance(ars: 50000, usd: 1000, mxn: 100, sol: 0)
+    var myBalance = Balance(ars: 0, usd: 5000, mxn: 100, sol: 0)
     let cotization = Cotization()
     override func viewDidLoad() {
         super.viewDidLoad()

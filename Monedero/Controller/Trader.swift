@@ -10,21 +10,12 @@ import UIKit
 
 class Trader: UIViewController {
     
-    //variables
-    /*
-     var origin1: Float = 1
-     var origin2: Float = 1
-     var origin3: Float = 1
-     var destiny1: Float = 0
-     var destiny2: Float = 0
-     var destiny3: Float = 0*/
+
     
     var balance: Balance?
     var countryCotization: CotizacionPais?
     
     
-    
-    // let cotizacion = Cotization()
     //parte Superior
     @IBOutlet weak var myImage: UIImageView!
     @IBOutlet weak var balanceNumber: UILabel!
@@ -186,28 +177,28 @@ class Trader: UIViewController {
                     let calculo = (Float(change) ?? 0) / countryObject.exchange1
                     fOrigin1.text = String(format:"%.2f",calculo)
                     if countryObject.country == .Arg{
-                        if (Float(change) ?? 0) > blns.ars {
+                        if (Float(calculo)) > blns.ars {
                             button1.isEnabled = false
                         } else {
                             button1.isEnabled = true
                         }
                     }
                     if countryObject.country == .Usa{
-                        if (Float(change) ?? 0) > blns.usd {
+                        if (Float(calculo)) > blns.usd {
                             button1.isEnabled = false
                         } else {
                             button1.isEnabled = true
                         }
                     }
                     if countryObject.country == .Mex{
-                        if (Float(change) ?? 0) > blns.mxn {
+                        if (Float(calculo)) > blns.mxn {
                             button1.isEnabled = false
                         } else {
                             button1.isEnabled = true
                         }
                     }
                     if countryObject.country == .Per{
-                        if (Float(change) ?? 0) > blns.sol {
+                        if (Float(calculo)) > blns.sol {
                             button1.isEnabled = false
                         } else {
                             button1.isEnabled = true
@@ -222,28 +213,28 @@ class Trader: UIViewController {
                     let calculo = (Float(change) ?? 0) / countryObject.exchange2
                     fOrigin2.text = String(format:"%.2f",calculo)
                     if countryObject.country == .Arg{
-                        if (Float(change) ?? 0) > blns.ars {
+                        if (Float(calculo)) > blns.ars {
                             button2.isEnabled = false
                         } else {
                             button2.isEnabled = true
                         }
                     }
                     if countryObject.country == .Usa{
-                        if (Float(change) ?? 0) > blns.usd {
+                        if (Float(calculo)) > blns.usd {
                             button2.isEnabled = false
                         } else {
                             button2.isEnabled = true
                         }
                     }
                     if countryObject.country == .Mex{
-                        if (Float(change) ?? 0) > blns.mxn {
+                        if (Float(calculo)) > blns.mxn {
                             button2.isEnabled = false
                         } else {
                             button2.isEnabled = true
                         }
                     }
                     if countryObject.country == .Per{
-                        if (Float(change) ?? 0) > blns.sol {
+                        if (Float(calculo)) > blns.sol {
                             button2.isEnabled = false
                         } else {
                             button2.isEnabled = true
@@ -258,28 +249,28 @@ class Trader: UIViewController {
                     let calculo = (Float(change) ?? 0) / countryObject.exchange3
                     fOrigin3.text = String(format:"%.2f",calculo)
                     if countryObject.country == .Arg{
-                        if (Float(change) ?? 0) > blns.ars {
+                        if (Float(calculo)) > blns.ars {
                             button3.isEnabled = false
                         } else {
                             button3.isEnabled = true
                         }
                     }
                     if countryObject.country == .Usa{
-                        if (Float(change) ?? 0) > blns.usd {
+                        if (Float(calculo)) > blns.usd {
                             button3.isEnabled = false
                         } else {
                             button3.isEnabled = true
                         }
                     }
                     if countryObject.country == .Mex{
-                        if (Float(change) ?? 0) > blns.mxn {
+                        if (Float(calculo)) > blns.mxn {
                             button3.isEnabled = false
                         } else {
                             button3.isEnabled = true
                         }
                     }
                     if countryObject.country == .Per{
-                        if (Float(change) ?? 0) > blns.sol {
+                        if (Float(calculo)) > blns.sol {
                             button3.isEnabled = false
                         } else {
                             button3.isEnabled = true
@@ -358,31 +349,32 @@ class Trader: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destino = segue.destination as? End, let blncs = balance,
            let countryObject = countryCotization, let buttonPressed = sender as? UIButton{
-            
             if countryObject.country == .Arg {
                 switch buttonPressed.tag {
                 case 0:
                     if let change = fOrigin1.text, let change2 = fDestiny1.text {
                         blncs.ars = blncs.ars - (Float(change) ?? 0)
                         blncs.usd = blncs.usd + (Float(change2) ?? 0)
-                        destino.myBalance = blncs
-                        break
+                        destino.suma = change2
+                        destino.resta = change
                     }
+                    break
                 case 1:
                     if let change = fOrigin2.text, let change2 = fDestiny2.text {
                         blncs.ars = blncs.ars - (Float(change) ?? 0)
                         blncs.mxn = blncs.mxn + (Float(change2) ?? 0)
-                        destino.myBalance = blncs
-                        break
+                        destino.suma = change2
+                        destino.resta = change
                     }
-                    
+                    break
                 case 2:
                     if let change = fOrigin3.text, let change2 = fDestiny3.text {
                         blncs.ars = blncs.ars - (Float(change) ?? 0)
                         blncs.sol = blncs.sol + (Float(change2) ?? 0)
-                        destino.myBalance = blncs
-                        break
+                        destino.suma = change2
+                        destino.resta = change
                     }
+                    break
                 default:
                     break
                 }
@@ -393,23 +385,25 @@ class Trader: UIViewController {
                     if let change = fOrigin1.text, let change2 = fDestiny1.text {
                         blncs.usd = blncs.usd - (Float(change) ?? 0)
                         blncs.ars = blncs.ars + (Float(change2) ?? 0)
+                        destino.suma = change2
+                        destino.resta = change
                     }
-                    destino.myBalance = blncs
                     break
                 case 1:
                     if let change = fOrigin2.text, let change2 = fDestiny2.text {
                         blncs.usd = blncs.usd - (Float(change) ?? 0)
                         blncs.mxn = blncs.mxn + (Float(change2) ?? 0)
-                        
+                        destino.suma = change2
+                        destino.resta = change
                     }
-                    destino.myBalance = blncs
                     break
                 case 2:
                     if let change = fOrigin3.text, let change2 = fDestiny3.text {
                         blncs.usd = blncs.usd - (Float(change) ?? 0)
                         blncs.sol = blncs.sol + (Float(change2) ?? 0)
+                        destino.suma = change2
+                        destino.resta = change
                     }
-                    destino.myBalance = blncs
                     break
                 default:
                     break
@@ -422,23 +416,25 @@ class Trader: UIViewController {
                     if let change = fOrigin1.text, let change2 = fDestiny1.text {
                         blncs.mxn = blncs.mxn - (Float(change) ?? 0)
                         blncs.ars = blncs.ars + (Float(change2) ?? 0)
+                        destino.suma = change2
+                        destino.resta = change
                     }
-                    destino.myBalance = blncs
                     break
                 case 1:
                     if let change = fOrigin2.text, let change2 = fDestiny2.text {
                         blncs.mxn = blncs.mxn - (Float(change) ?? 0)
                         blncs.usd = blncs.usd + (Float(change2) ?? 0)
-                        print("xd\(blncs.usd)")
+                        destino.suma = change2
+                        destino.resta = change
                     }
-                    destino.myBalance = blncs
                     break
                 case 2:
                     if let change = fOrigin3.text, let change2 = fDestiny3.text {
                         blncs.mxn = blncs.mxn - (Float(change) ?? 0)
                         blncs.sol = blncs.sol + (Float(change2) ?? 0)
+                        destino.suma = change2
+                        destino.resta = change
                     }
-                    destino.myBalance = blncs
                     break
                 default:
                     break
@@ -451,27 +447,31 @@ class Trader: UIViewController {
                     if let change = fOrigin1.text, let change2 = fDestiny1.text {
                         blncs.sol = blncs.sol - (Float(change) ?? 0)
                         blncs.ars = blncs.ars + (Float(change2) ?? 0)
+                        destino.suma = change2
+                        destino.resta = change
                     }
-                    destino.myBalance = blncs
                     break
                 case 1:
                     if let change = fOrigin2.text, let change2 = fDestiny2.text {
-                        blncs.sol = blncs.sol - (Float(change) ?? 0)
-                        blncs.usd = blncs.usd + (Float(change2) ?? 0)
-                    }
-                    destino.myBalance = blncs
+                    blncs.sol = blncs.sol - (Float(change) ?? 0)
+                    blncs.usd = blncs.usd + (Float(change2) ?? 0)
+                    destino.suma = change2
+                    destino.resta = change
+                }
                     break
                 case 2:
                     if let change = fOrigin3.text, let change2 = fDestiny3.text {
                         blncs.sol = blncs.sol - (Float(change) ?? 0)
                         blncs.mxn = blncs.mxn + (Float(change2) ?? 0)
+                        destino.suma = change2
+                        destino.resta = change
                     }
-                    destino.myBalance = blncs
                     break
                 default:
                     break
                 }
             }
+            destino.myBalance = blncs
         }
     }
 }
