@@ -11,7 +11,7 @@ import UIKit
 class Trader: UIViewController {
     
 
-    
+    var wallets: [Currency]?
     var balance: Balance?
     var countryCotization: CotizacionPais?
     
@@ -58,6 +58,9 @@ class Trader: UIViewController {
         fOrigin1.text = "1"
         fOrigin2.text = "1"
         fOrigin3.text = "1"
+        button1.isEnabled = false
+        button2.isEnabled = false
+        button3.isEnabled = false
         countryView()
     }
     
@@ -71,28 +74,28 @@ class Trader: UIViewController {
                     let calculo = (Float(change) ?? 0) * countryObject.exchange1
                     fDestiny1.text = String(format:"%.2f",calculo)
                     if countryObject.country == .Arg{
-                        if (Float(change) ?? 0) > blns.ars {
+                        if (Float(change) ?? 0) > blns.ars || (Float(change) ?? 0) < 1 {
                             button1.isEnabled = false
                         } else {
                             button1.isEnabled = true
                         }
                     }
                     if countryObject.country == .Usa{
-                        if (Float(change) ?? 0) > blns.usd {
+                        if (Float(change) ?? 0) > blns.usd || (Float(change) ?? 0) < 1 {
                             button1.isEnabled = false
                         } else {
                             button1.isEnabled = true
                         }
                     }
                     if countryObject.country == .Mex{
-                        if (Float(change) ?? 0) > blns.mxn {
+                        if (Float(change) ?? 0) > blns.mxn || (Float(change) ?? 0) < 1 {
                             button1.isEnabled = false
                         } else {
                             button1.isEnabled = true
                         }
                     }
                     if countryObject.country == .Per{
-                        if (Float(change) ?? 0) > blns.sol {
+                        if (Float(change) ?? 0) > blns.sol || (Float(change) ?? 0) < 1 {
                             button1.isEnabled = false
                         } else {
                             button1.isEnabled = true
@@ -106,28 +109,28 @@ class Trader: UIViewController {
                     let calculo = (Float(change) ?? 0) * countryObject.exchange2
                     fDestiny2.text = String(format:"%.2f",calculo)
                     if countryObject.country == .Arg{
-                        if (Float(change) ?? 0) > blns.ars {
+                        if  (Float(change) ?? 0) > blns.ars || (Float(change) ?? 0) < 1 {
                             button2.isEnabled = false
                         } else {
                             button2.isEnabled = true
                         }
                     }
                     if countryObject.country == .Usa{
-                        if (Float(change) ?? 0) > blns.usd {
+                        if (Float(change) ?? 0) > blns.usd || (Float(change) ?? 0) < 1 {
                             button2.isEnabled = false
                         } else {
                             button2.isEnabled = true
                         }
                     }
                     if countryObject.country == .Mex{
-                        if (Float(change) ?? 0) > blns.mxn {
+                        if (Float(change) ?? 0) > blns.mxn || (Float(change) ?? 0) < 1 {
                             button2.isEnabled = false
                         } else {
                             button2.isEnabled = true
                         }
                     }
                     if countryObject.country == .Per{
-                        if (Float(change) ?? 0) > blns.sol {
+                        if (Float(change) ?? 0) > blns.sol || (Float(change) ?? 0) < 1 {
                             button2.isEnabled = false
                         } else {
                             button2.isEnabled = true
@@ -141,28 +144,28 @@ class Trader: UIViewController {
                     let calculo = (Float(change) ?? 0) * countryObject.exchange3
                     fDestiny3.text = String(format:"%.2f",calculo)
                     if countryObject.country == .Arg{
-                        if (Float(change) ?? 0) > blns.ars {
+                        if (Float(change) ?? 0) > blns.ars || (Float(change) ?? 0) < 1 {
                             button3.isEnabled = false
                         } else {
                             button3.isEnabled = true
                         }
                     }
                     if countryObject.country == .Usa{
-                        if (Float(change) ?? 0) > blns.usd {
+                        if (Float(change) ?? 0) > blns.usd || (Float(change) ?? 0) < 1 {
                             button3.isEnabled = false
                         } else {
                             button3.isEnabled = true
                         }
                     }
                     if countryObject.country == .Mex{
-                        if (Float(change) ?? 0) > blns.mxn {
+                        if (Float(change) ?? 0) > blns.mxn || (Float(change) ?? 0) < 1 {
                             button3.isEnabled = false
                         } else {
                             button3.isEnabled = true
                         }
                     }
                     if countryObject.country == .Per{
-                        if (Float(change) ?? 0) > blns.sol {
+                        if (Float(change) ?? 0) > blns.sol || (Float(change) ?? 0) < 1 {
                             button3.isEnabled = false
                         } else {
                             button3.isEnabled = true
@@ -177,28 +180,28 @@ class Trader: UIViewController {
                     let calculo = (Float(change) ?? 0) / countryObject.exchange1
                     fOrigin1.text = String(format:"%.2f",calculo)
                     if countryObject.country == .Arg{
-                        if (Float(calculo)) > blns.ars {
+                        if (Float(calculo)) > blns.ars || (Float(calculo)) < 1 {
                             button1.isEnabled = false
                         } else {
                             button1.isEnabled = true
                         }
                     }
                     if countryObject.country == .Usa{
-                        if (Float(calculo)) > blns.usd {
+                        if (Float(calculo)) > blns.usd || (Float(calculo)) < 1 {
                             button1.isEnabled = false
                         } else {
                             button1.isEnabled = true
                         }
                     }
                     if countryObject.country == .Mex{
-                        if (Float(calculo)) > blns.mxn {
+                        if (Float(calculo)) > blns.mxn || (Float(calculo)) < 1 {
                             button1.isEnabled = false
                         } else {
                             button1.isEnabled = true
                         }
                     }
                     if countryObject.country == .Per{
-                        if (Float(calculo)) > blns.sol {
+                        if (Float(calculo)) > blns.sol || (Float(calculo)) < 1 {
                             button1.isEnabled = false
                         } else {
                             button1.isEnabled = true
@@ -213,28 +216,28 @@ class Trader: UIViewController {
                     let calculo = (Float(change) ?? 0) / countryObject.exchange2
                     fOrigin2.text = String(format:"%.2f",calculo)
                     if countryObject.country == .Arg{
-                        if (Float(calculo)) > blns.ars {
+                        if (Float(calculo)) > blns.ars || (Float(calculo)) < 1 {
                             button2.isEnabled = false
                         } else {
                             button2.isEnabled = true
                         }
                     }
                     if countryObject.country == .Usa{
-                        if (Float(calculo)) > blns.usd {
+                        if (Float(calculo)) > blns.usd || (Float(calculo)) < 1 {
                             button2.isEnabled = false
                         } else {
                             button2.isEnabled = true
                         }
                     }
                     if countryObject.country == .Mex{
-                        if (Float(calculo)) > blns.mxn {
+                        if (Float(calculo)) > blns.mxn || (Float(calculo)) < 1 {
                             button2.isEnabled = false
                         } else {
                             button2.isEnabled = true
                         }
                     }
                     if countryObject.country == .Per{
-                        if (Float(calculo)) > blns.sol {
+                        if (Float(calculo)) > blns.sol || (Float(calculo)) < 1  {
                             button2.isEnabled = false
                         } else {
                             button2.isEnabled = true
@@ -248,29 +251,29 @@ class Trader: UIViewController {
                 if let change = fDestiny3.text {
                     let calculo = (Float(change) ?? 0) / countryObject.exchange3
                     fOrigin3.text = String(format:"%.2f",calculo)
-                    if countryObject.country == .Arg{
-                        if (Float(calculo)) > blns.ars {
+                    if countryObject.country == .Arg {
+                        if (Float(calculo)) > blns.ars || (Float(calculo)) < 1  {
                             button3.isEnabled = false
                         } else {
                             button3.isEnabled = true
                         }
                     }
                     if countryObject.country == .Usa{
-                        if (Float(calculo)) > blns.usd {
+                        if (Float(calculo)) > blns.usd || (Float(calculo)) < 1 {
                             button3.isEnabled = false
                         } else {
                             button3.isEnabled = true
                         }
                     }
                     if countryObject.country == .Mex{
-                        if (Float(calculo)) > blns.mxn {
+                        if (Float(calculo)) > blns.mxn || (Float(calculo)) < 1 {
                             button3.isEnabled = false
                         } else {
                             button3.isEnabled = true
                         }
                     }
                     if countryObject.country == .Per{
-                        if (Float(calculo)) > blns.sol {
+                        if (Float(calculo)) > blns.sol || (Float(calculo)) < 1 {
                             button3.isEnabled = false
                         } else {
                             button3.isEnabled = true

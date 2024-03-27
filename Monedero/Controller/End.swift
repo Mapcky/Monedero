@@ -50,7 +50,7 @@ class End: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destino = segue.destination as? MainView, let balance = myBalance {
-            destino.myBalance = balance
+           // destino.myBalance = balance
         }
     }
 }
