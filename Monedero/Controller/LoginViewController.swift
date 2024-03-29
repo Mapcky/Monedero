@@ -55,13 +55,10 @@ class LoginViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destino = segue.destination as? RegisterViewController{
             destino.email = emailField.text
-            
-            
         }
+        
         if let destino = segue.destination as? MainView{
             destino.email = emailField.text
-            
-            
         }
     }
     

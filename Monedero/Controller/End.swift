@@ -26,6 +26,7 @@ class End: UIViewController {
     var myBalance: Balance?
     var suma: String?
     var resta: String?
+    var email: String?
     
     
     override func viewDidLoad() {
@@ -49,8 +50,8 @@ class End: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destino = segue.destination as? MainView, let balance = myBalance {
-           // destino.myBalance = balance
+        if let destino = segue.destination as? MainView, let mail = email {
+            destino.email = mail
         }
     }
 }

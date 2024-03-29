@@ -7,14 +7,16 @@
 
 import Foundation
 import UIKit
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
-class Trader: UIViewController {
+class Trader: UIViewController, UITextFieldDelegate {
     
-
-    var wallets: [Currency]?
+    var email: String?
+    //private var wallets: [Currency]?
     var balance: Balance?
     var countryCotization: CotizacionPais?
-    
+    private let db = Firestore.firestore()
     
     //parte Superior
     @IBOutlet weak var myImage: UIImageView!
@@ -55,9 +57,18 @@ class Trader: UIViewController {
         imageArrow.image = UIImage(systemName:"arrowshape.left.arrowshape.right.fill")
         arrow2.image = UIImage(systemName: "arrowshape.left.arrowshape.right.fill")
         arrow3.image = UIImage(systemName: "arrowshape.left.arrowshape.right.fill")
+        fOrigin1.delegate = self
+        fOrigin2.delegate = self
+        fOrigin3.delegate = self
+        fDestiny1.delegate = self
+        fDestiny2.delegate = self
+        fDestiny3.delegate = self
         fOrigin1.text = "1"
         fOrigin2.text = "1"
         fOrigin3.text = "1"
+        button1.setBackgroundImage(imageWithColor(color: UIColor.lightGray), for: .disabled)
+        button2.setBackgroundImage(imageWithColor(color: UIColor.lightGray), for: .disabled)
+        button3.setBackgroundImage(imageWithColor(color: UIColor.lightGray), for: .disabled)
         button1.isEnabled = false
         button2.isEnabled = false
         button3.isEnabled = false
@@ -66,12 +77,13 @@ class Trader: UIViewController {
     
     
     @IBAction func editando(_ sender: Any) {
-        if let countryObject = countryCotization, let fieldModify = sender as? UITextField,
-           let blns = balance{
-            switch fieldModify.tag {
+        if let countryObject = countryCotization, let fieldModify = sender as? UITextField, //CountryObject cotization from origin country
+           
+           let blns = balance{                                      //User wallet
+            switch fieldModify.tag {                                //Switch of textfields
             case 0:
                 if let change = fOrigin1.text {
-                    let calculo = (Float(change) ?? 0) * countryObject.exchange1
+                    let calculo = (Float(change) ?? 0) * countryObject.exchange1        //Control amount input < wallet
                     fDestiny1.text = String(format:"%.2f",calculo)
                     if countryObject.country == .Arg{
                         if (Float(change) ?? 0) > blns.ars || (Float(change) ?? 0) < 1 {
@@ -350,7 +362,7 @@ class Trader: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destino = segue.destination as? End, let blncs = balance,
+        if let destino = segue.destination as? End, let blncs = balance, let mail = email,
            let countryObject = countryCotization, let buttonPressed = sender as? UIButton{
             if countryObject.country == .Arg {
                 switch buttonPressed.tag {
@@ -474,9 +486,48 @@ class Trader: UIViewController {
                     break
                 }
             }
+            storeData(balance: blncs)
             destino.myBalance = blncs
+            destino.email = mail
         }
     }
+    
+    
+    func storeData(balance:Balance) {
+        
+        if let mail = email{
+            db.collection("Wallets").document(mail).setData(["Ars" : String(format:"%.2f",balance.ars), "Usd" : String(format:"%.2f",balance.usd), "Mxn" : String(format:"%.2f",balance.mxn), "Sol" : String(format:"%.2f",balance.sol)])
+        }
+    }
+    
+    // Método del protocolo UITextFieldDelegate que se llama cada vez que se cambia el texto en el campo de texto
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Llama a la función para validar si el texto es numérico con un punto decimal
+        return validateNumericInput(textField: textField, replacementString: string)
+    }
+
+    // Función para validar si el texto ingresado es numérico con un punto decimal
+    func validateNumericInput(textField: UITextField, replacementString string: String) -> Bool {
+        // Obtener el texto completo después de la edición
+        let currentText = (textField.text ?? "") as NSString
+        let newText = currentText.replacingCharacters(in: NSRange(location: 0, length: currentText.length), with: string)
+        
+        // Permitir números enteros o números con un punto decimal
+        return newText.isEmpty || (Double(newText) != nil)
+    }
+
+    // Función para crear una imagen de un color sólido
+    func imageWithColor(color: UIColor) -> UIImage {
+        let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
+        UIGraphicsBeginImageContext(rect.size)
+        let context = UIGraphicsGetCurrentContext()
+        context?.setFillColor(color.cgColor)
+        context?.fill(rect)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image!
+    }
+    
 }
 
 

@@ -16,10 +16,10 @@ class Currency {
     
     
     enum Country :String {
-        case Ars = "Argentina"
-        case Usd = "United States"
-        case Mxn = "Mexico"
-        case Sol = "Peru"
+        case Argentina = "ARS"
+        case Usa = "USD"
+        case Mexico = "MXN"
+        case Peru = "SOL"
     }
     
     init(balance: Float? = nil, origin: Country) {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Cotization {
+class Cotization {  //simula datos obtenidos internet
     
     let arsToUsd:Float = 0.0012
     let arsToMxn:Float = 0.020
