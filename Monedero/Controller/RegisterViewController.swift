@@ -33,7 +33,7 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
         
     }
     
-  
+  //Funcion deposit, obtiene los datos de los textfield y los guarda en firebase bajo el email obtenido en LoginViewController
     @IBAction func deposit(_ sender: Any) {
         if let mail = email, let ars = arsField.text, let usd = usdField.text, let mxn = mxnField.text, let sol = solField.text {
             db.collection("Wallets").document(mail).setData([

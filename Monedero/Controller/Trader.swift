@@ -76,6 +76,7 @@ class Trader: UIViewController, UITextFieldDelegate {
     }
     
     
+    //Funcion la cual busca deshabilitar el boton en caso de que se ingresase un monto incorrecto
     @IBAction func editando(_ sender: Any) {
         if let countryObject = countryCotization, let fieldModify = sender as? UITextField, //CountryObject cotization from origin country
            
@@ -301,6 +302,7 @@ class Trader: UIViewController, UITextFieldDelegate {
         }
     }
     
+    //Funcion para formatear la pantalla segun el pais elegido
     func countryView (){
         if let countryObject = countryCotization, let myBalance = balance {
             switch countryObject.country {
@@ -364,7 +366,11 @@ class Trader: UIViewController, UITextFieldDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destino = segue.destination as? End, let blncs = balance, let mail = email,
            let countryObject = countryCotization, let buttonPressed = sender as? UIButton{
+            
+            //Depende del Pais en el cual esté formateada la pantalla, se haran cambios de saldo en base a esto
             if countryObject.country == .Arg {
+                
+                //Segun el boton presionado se realizaran los cambiosd de saldo sobre el objeto Balance
                 switch buttonPressed.tag {
                 case 0:
                     if let change = fOrigin1.text, let change2 = fDestiny1.text {
@@ -486,13 +492,13 @@ class Trader: UIViewController, UITextFieldDelegate {
                     break
                 }
             }
-            storeData(balance: blncs)
-            destino.myBalance = blncs
+            storeData(balance: blncs)       //Store data en firebase con los cambios realizados
+            destino.myBalance = blncs       //Se envia el balance actualizado a la pantalla End y tambien el email
             destino.email = mail
         }
     }
     
-    
+    //Guardado de los datos en firebase con el balance actualizado
     func storeData(balance:Balance) {
         
         if let mail = email{

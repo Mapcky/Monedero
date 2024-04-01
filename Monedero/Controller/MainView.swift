@@ -19,14 +19,12 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     
     private var myBalance: Balance?
     private var wallet :[Currency]?
-   // private var cards: [String: String]?
     private let db = Firestore.firestore()
     var email: String?
 
     let cotization = Cotization()
     override func viewDidLoad() {
         super.viewDidLoad()
-        //navigation.hidesBackButton = true
         loading.startAnimating()
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -45,8 +43,8 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         performSegue(withIdentifier: "traderView", sender: sender)
     }
     
-    
-    
+    //MARK: prepare
+    //Override de prepare, se envian los datos necesariosa Trader
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destino = segue.destination as? Trader, let buttonPressed = sender as? UIButton {
                 if buttonPressed.tag == 0 {
@@ -70,7 +68,7 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     }
     
     
-    
+    // MARK: - gotData
     func gotData(completion: @escaping () -> Void) {
         if let mail = email {
             
@@ -81,17 +79,15 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
                 else {
                     if let document = document {
                         let data = document.data()
-                       /* self.cards = ["Ars" : data?["Ars"] as? String ?? "",
-                                      "Usd" : data?["Usd"] as? String ?? "",
-                                      "Mxn" : data?["Mxn"] as? String ?? "",
-                                      "Sol" : data?["Sol"] as? String ?? "",]
-                        */
+                        //obtencion de los datos de firebase
                         let cArg = Currency(balance:  Float(data?["Ars"] as? String ?? "0"), origin: .Argentina)
                         let cUsd = Currency(balance:  Float(data?["Usd"] as? String ?? "0"), origin: .Usa)
                         let cMxn = Currency(balance:  Float(data?["Mxn"] as? String ?? "0"), origin: .Mexico)
                         let cSol = Currency(balance:  Float(data?["Sol"] as? String ?? "0"), origin: .Peru)
+                        //se usan las instancias de Currency para luego crear las tarjetas
                         self.wallet = [cArg,cUsd,cMxn,cSol]
                         
+                        //myBalance es creado con los datos instanciados en los diferentes Currency, usado para enviar a Trader
                         self.myBalance = Balance(ars: Float(cArg.balance ?? 0),
                                                  usd: Float(cUsd.balance ?? 0),
                                                  mxn: Float(cMxn.balance ?? 0),
@@ -110,10 +106,12 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     
     // MARK: - UICollectionViewDataSource
     
+    //Creacion de numero de tarjetas, segun cuantos items pertenezcan a el array de Currency
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return wallet?.count ?? 0
     }
     
+    //Creacion de cada Cell del CollectionView, se da formato a labels y forma de la cell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CustomCell", for: indexPath) as! MyCollectionViewCell
         if let wallets = wallet {
@@ -127,7 +125,7 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     }
     
     // MARK: - UICollectionViewDelegateFlowLayout
-    
+    //Tamaño de cada celda
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.bounds.width  // Aquí puedes ajustar el ancho de las tarjetas según tus necesidades
         let height = collectionView.bounds.height // Aquí puedes ajustar el alto de las tarjetas según tus necesidades
