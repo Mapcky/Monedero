@@ -370,7 +370,7 @@ class Trader: UIViewController, UITextFieldDelegate {
             //Depende del Pais en el cual esté formateada la pantalla, se haran cambios de saldo en base a esto
             if countryObject.country == .Arg {
                 
-                //Segun el boton presionado se realizaran los cambiosd de saldo sobre el objeto Balance
+                //Segun el boton presionado se realizaran los cambios de saldo sobre el objeto Balance
                 switch buttonPressed.tag {
                 case 0:
                     if let change = fOrigin1.text, let change2 = fDestiny1.text {

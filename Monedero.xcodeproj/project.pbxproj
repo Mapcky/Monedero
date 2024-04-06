@@ -11,7 +11,7 @@
 		30271F812B9F7C8D002FB1FC /* End.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30271F802B9F7C8C002FB1FC /* End.swift */; };
 		3036DE492B99F73200BF5748 /* Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3036DE482B99F73100BF5748 /* Balance.swift */; };
 		3036DE4B2B99FEEC00BF5748 /* Trader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3036DE4A2B99FEEC00BF5748 /* Trader.swift */; };
-		309F72772BB4B11C00B87F63 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309F72762BB4B11C00B87F63 /* Currency.swift */; };
+		306C38F42BBF1948005A5613 /* Wallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306C38F32BBF1948005A5613 /* Wallet.swift */; };
 		309F72792BB4B14900B87F63 /* MyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309F72782BB4B14900B87F63 /* MyCollectionViewCell.swift */; };
 		309F727B2BB4B17200B87F63 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309F727A2BB4B17200B87F63 /* LoginViewController.swift */; };
 		309F727D2BB4B26B00B87F63 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309F727C2BB4B26B00B87F63 /* RegisterViewController.swift */; };
@@ -21,6 +21,8 @@
 		309F72862BB4BC3E00B87F63 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 309F72852BB4BC3E00B87F63 /* FirebaseFirestoreSwift */; };
 		309F72882BB4BD6600B87F63 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 309F72872BB4BD6600B87F63 /* GoogleService-Info.plist */; };
 		30C6F4A12B9A4E3A0075A239 /* Cotization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C6F4A02B9A4E3A0075A239 /* Cotization.swift */; };
+		30D49DE62BBD82B600FA40C3 /* NewTrader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D49DE52BBD82B600FA40C3 /* NewTrader.swift */; };
+		30D49DE82BBD831900FA40C3 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D49DE72BBD831900FA40C3 /* Currency.swift */; };
 		30FC5F512B97D1C5005A4CC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30FC5F502B97D1C5005A4CC6 /* AppDelegate.swift */; };
 		30FC5F532B97D1C5005A4CC6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30FC5F522B97D1C5005A4CC6 /* SceneDelegate.swift */; };
 		30FC5F552B97D1C5005A4CC6 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30FC5F542B97D1C5005A4CC6 /* MainView.swift */; };
@@ -34,12 +36,14 @@
 		30271F802B9F7C8C002FB1FC /* End.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = End.swift; sourceTree = "<group>"; };
 		3036DE482B99F73100BF5748 /* Balance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Balance.swift; sourceTree = "<group>"; };
 		3036DE4A2B99FEEC00BF5748 /* Trader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trader.swift; sourceTree = "<group>"; };
-		309F72762BB4B11C00B87F63 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
+		306C38F32BBF1948005A5613 /* Wallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wallet.swift; sourceTree = "<group>"; };
 		309F72782BB4B14900B87F63 /* MyCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCollectionViewCell.swift; sourceTree = "<group>"; };
 		309F727A2BB4B17200B87F63 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		309F727C2BB4B26B00B87F63 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		309F72872BB4BD6600B87F63 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		30C6F4A02B9A4E3A0075A239 /* Cotization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cotization.swift; sourceTree = "<group>"; };
+		30D49DE52BBD82B600FA40C3 /* NewTrader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrader.swift; sourceTree = "<group>"; };
+		30D49DE72BBD831900FA40C3 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
 		30FC5F4D2B97D1C5005A4CC6 /* Monedero.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Monedero.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		30FC5F502B97D1C5005A4CC6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		30FC5F522B97D1C5005A4CC6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -82,6 +86,7 @@
 				30FC5F542B97D1C5005A4CC6 /* MainView.swift */,
 				309F727A2BB4B17200B87F63 /* LoginViewController.swift */,
 				309F727C2BB4B26B00B87F63 /* RegisterViewController.swift */,
+				30D49DE52BBD82B600FA40C3 /* NewTrader.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -101,8 +106,9 @@
 				3036DE482B99F73100BF5748 /* Balance.swift */,
 				30C6F4A02B9A4E3A0075A239 /* Cotization.swift */,
 				30271F7E2B9F7C7D002FB1FC /* CotizacionPais.swift */,
-				309F72762BB4B11C00B87F63 /* Currency.swift */,
 				309F72782BB4B14900B87F63 /* MyCollectionViewCell.swift */,
+				30D49DE72BBD831900FA40C3 /* Currency.swift */,
+				306C38F32BBF1948005A5613 /* Wallet.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -218,7 +224,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				309F72772BB4B11C00B87F63 /* Currency.swift in Sources */,
 				30FC5F552B97D1C5005A4CC6 /* MainView.swift in Sources */,
 				30FC5F512B97D1C5005A4CC6 /* AppDelegate.swift in Sources */,
 				309F727D2BB4B26B00B87F63 /* RegisterViewController.swift in Sources */,
@@ -227,9 +232,12 @@
 				30271F7F2B9F7C7D002FB1FC /* CotizacionPais.swift in Sources */,
 				309F72792BB4B14900B87F63 /* MyCollectionViewCell.swift in Sources */,
 				30FC5F532B97D1C5005A4CC6 /* SceneDelegate.swift in Sources */,
+				306C38F42BBF1948005A5613 /* Wallet.swift in Sources */,
 				30271F812B9F7C8D002FB1FC /* End.swift in Sources */,
+				30D49DE62BBD82B600FA40C3 /* NewTrader.swift in Sources */,
 				30C6F4A12B9A4E3A0075A239 /* Cotization.swift in Sources */,
 				309F727B2BB4B17200B87F63 /* LoginViewController.swift in Sources */,
+				30D49DE82BBD831900FA40C3 /* Currency.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

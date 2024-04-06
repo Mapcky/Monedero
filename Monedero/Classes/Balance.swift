@@ -6,10 +6,8 @@
 //
 
 import Foundation
-//import FirebaseFirestoreSwift
 
 class Balance {
-    //@DocumentID var id: String?
     var ars: Float
     var usd: Float
     var mxn: Float

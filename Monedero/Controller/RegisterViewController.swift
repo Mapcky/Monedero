@@ -11,13 +11,17 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 class RegisterViewController: UIViewController, UITextFieldDelegate {
+    
+    
+    //TextFields Outlets
     @IBOutlet weak var arsField: UITextField!
     @IBOutlet weak var usdField: UITextField!
     @IBOutlet weak var mxnField: UITextField!
     @IBOutlet weak var solField: UITextField!
     
+    //Variables
+    var wallet :Wallet?
     var email :String?
-    private let db = Firestore.firestore()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,25 +37,61 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
         
     }
     
+    
+    
+    
+    //MARK: - deposit
+    
   //Funcion deposit, obtiene los datos de los textfield y los guarda en firebase bajo el email obtenido en LoginViewController
     @IBAction func deposit(_ sender: Any) {
-        if let mail = email, let ars = arsField.text, let usd = usdField.text, let mxn = mxnField.text, let sol = solField.text {
-            db.collection("Wallets").document(mail).setData([
-                "Ars" : ars,
-                "Usd" : usd,
-                "Mxn" : mxn,
-                "Sol" : sol])
+        if let ars = Float(arsField.text ?? "0"), let usd = Float(usdField.text ?? "0"), let mxn = Float(mxnField.text ?? "0"), let sol = Float(solField.text ?? "0") {
+            
+            //Boolean que definiran cuantas tarjetas se mostrarán
+            var booleanArs = true
+            var booleanUsd = true
+            var booleanMxn = true
+            var booleanSol = true
+            
+            if (ars == 0) {
+                booleanArs = false
+            }
+            if (usd == 0) {
+                booleanUsd = false
+            }
+            if (mxn == 0) {
+                booleanMxn = false
+            }
+            if (sol == 0) {
+                booleanSol = false
+            }
+            
+            let c1 = Currency(amount: ars, country: .Ars, isActive: booleanArs, usdCotization: 0.0012)
+            let c2 = Currency(amount: usd, country: .Usd, isActive: booleanUsd, usdCotization: 1)
+            let c3 = Currency(amount: mxn, country: .Mxn, isActive: booleanMxn, usdCotization: 0.060)
+            let c4 = Currency(amount: sol, country: .Sol, isActive: booleanSol, usdCotization: 0.27)
+            
+            wallet = Wallet(money: [c1,c2,c3,c4])
+            storeData(whale: self.wallet!)
             performSegue(withIdentifier: "2Main", sender: sender)
         }
         
     }
     
+    
+    //MARK: - prepare
+    
+    //Se envia el email para luego recuperar los datos de FireStore en MainView
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destino = segue.destination as? MainView, let mail = email{
             destino.email = mail
+            //Se oculta el boton back del NavigationController en MainView para evitar volver a la pantalla de registro
             destino.navigationItem.hidesBackButton = true
         }
     }
+    
+    
+    
+    //MARK: - TextField Methods
     
     
     // Método del protocolo UITextFieldDelegate que se llama cada vez que se cambia el texto en el campo de texto
@@ -77,6 +117,24 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    
+    
+    
+    //MARK: - storeData
+    
+    //Metodo para almacenar el objeto Wallet en FireStore
+    func storeData(whale: Wallet) {
+        let db = Firestore.firestore()
+        if let mail = email {
+            let collectionRef = db.collection(mail)
+            do {
+                try collectionRef.addDocument(from: whale)
+            }
+            catch {
+                print(error)
+            }
+        }
+    }
     
 }
 

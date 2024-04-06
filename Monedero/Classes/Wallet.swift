@@ -6,3 +6,17 @@
 //
 
 import Foundation
+import FirebaseFirestore
+import FirebaseFirestoreSwift
+
+
+class Wallet :Codable {
+    
+    @DocumentID var id : String?
+    var myMoney : [Currency]
+    
+    init(money :[Currency]) {
+        self.myMoney = money
+    }
+    
+}

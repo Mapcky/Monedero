@@ -6,33 +6,35 @@
 //
 
 import Foundation
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
-
-class NewCurrency {
+class Currency :Codable{
     
-var amount : Float
-let country : Country
-var isActive : Bool
-let usdCotization : Float
-
-
-enum Country : String {
+    var amount : Float
+    let country : Country
+    var isActive : Bool
+    let usdCotization : Float
     
-    case Ars = "ARS🇦🇷"
-    case Usd = "USD🇺🇸"
-    case Mxn = "MXN🇲🇽"
-    case Sol = "SOL🇵🇪"
-}
-
-
-
-
-
-init(amount: Float, country: Country, isActive: Bool, usdCotization :Float){
-    self.amount = amount
-    self.country = country
-    self.isActive = isActive
-    self.usdCotization = usdCotization
-}
-
+    
+    
+    enum Country : String, Codable {
+        
+        case Ars = "ARS🇦🇷"
+        case Usd = "USD🇺🇸"
+        case Mxn = "MXN🇲🇽"
+        case Sol = "SOL🇵🇪"
+    }
+    
+    
+    
+    
+    
+    init(amount: Float, country: Country, isActive: Bool, usdCotization :Float){
+        self.amount = amount
+        self.country = country
+        self.isActive = isActive
+        self.usdCotization = usdCotization
+    }
+    
 }

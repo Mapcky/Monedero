@@ -6,24 +6,192 @@
 //
 
 import UIKit
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
-class NewTrader: UIViewController {
+class NewTrader: UIViewController,UITextFieldDelegate {
+    
+    //Variables
+    var email: String?
+    var wallet : Wallet?
 
+    //Button & Menu Outlets
+    var menuActions = [UIAction]()
+    var menuActionsB2 = [UIAction]()
+    @IBOutlet weak var excButton: UIButton!
+    @IBOutlet weak var b2: UIButton!
+    @IBOutlet weak var popButton: UIButton!
+    
+    //Labels Outlets
+    var originCurrency :Currency?
+    var destinyCurrency :Currency?
+    
+    //TextFields Outlets
+    @IBOutlet weak var originField: UITextField!
+    @IBOutlet weak var destinyField: UITextField!
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        originField.delegate = self
+        destinyField.delegate = self
+        excButton.isEnabled = false
+        setPopButton()
+        
+        originCurrency = wallet!.myMoney.first
+        destinyCurrency = wallet!.myMoney.first
+        
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    //MARK: - SetPopButtons
+    
+    //Armado de las menu actions de los botones
+    func setPopButton() {
+        for selector in wallet!.myMoney{
+            if selector.isActive == true {
+                let action = UIAction(title : selector.country.rawValue, handler: {action in self.handleMenuSelection(selector.country.rawValue) })
+                menuActions.append(action)
+            }
+            let actionB2 = UIAction(title : selector.country.rawValue, handler: {actionB2 in self.handleMenuSelection(selector.country.rawValue)})
+            menuActionsB2.append(actionB2)
+        }
+        
+        let menu = UIMenu(children: menuActions)
+        let menub2 = UIMenu(children: menuActionsB2)
+        popButton.menu = menu
+        b2.menu = menub2
     }
-    */
+    
+    
+    //MARK: - sameCountry
+    
+    //Comprueba si ambos botones han elegido la misma opcion y se deshabilita el boton Transaccion
+    func sameCountry() {
+        if let b1Title = popButton.currentTitle, let b2Tittle = b2.currentTitle {
+            
+            if(b1Title == b2Tittle) {
+                excButton.isEnabled = false
+            }
+            else {
+                excButton.isEnabled = true
+            }
+        }
+    }
+    
+    
+    //MARK: - editingField
+    
+    //Control de los Fields
+    @IBAction func editingField(_ sender: Any) {
+        if let fieldModify = sender as? UITextField {
+            
+            switch fieldModify.tag {
+            case 0:
+                if (Float (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Float (originField.text ?? "0") ?? 0) < 0 {
+                    //originField.text = String(originCurrency!.amount)
+                    excButton.isEnabled = false
+                }
+                else {
+                    excButton.isEnabled = true
+                }
+                let calculo = (Float(originField.text!) ?? 0) * originCurrency!.usdCotization
+                destinyField.text = String(format: "%.3f",calculo / destinyCurrency!.usdCotization)
+                break
+                
+            case 1:
+                if (Float (destinyField.text ?? "0") ?? 0) > destinyCurrency!.amount || (Float (originField.text ?? "0") ?? 0) < 0  {
+                   // destinyField.text = String(destinyCurrency!.amount)
+                    excButton.isEnabled = false
+                }
+                else {
+                    excButton.isEnabled = true
+                }
+                let calculo2 = (Float(destinyField.text!) ?? 0) * destinyCurrency!.usdCotization
+                print(calculo2)
+                originField.text = String(format: "%.3f",calculo2 / originCurrency!.usdCotization)
+                break
+            default:
+                break
+            }
+        }
+    }
+    
+    
+    
+    @IBAction func exchangeAction(_ sender: Any) {
+        performSegue(withIdentifier: "End", sender: sender)
+    }
+    
+    
+    //MARK: - HandleMenuSelection
+    //Se Ejecuta cada vez que se cambia la opcion seleccionada de los menues
+    func handleMenuSelection(_ option: String) {
+        // Obtiene el título del botón cuando una opcion es seleccionada
+        sameCountry()
+        for bag in wallet!.myMoney {
+            if popButton.currentTitle == bag.country.rawValue {
+                originCurrency = bag
+            }
+            if b2.currentTitle == bag.country.rawValue {
+                destinyCurrency = bag
+            }
+        }
+        destinyField.text = ""
+        originField.text = ""
+    }
+    
+    //MARK: - storeData
+    //Guardado de los datos en firebase con el balance actualizado
+    func storeData() {
+        let db = Firestore.firestore()
+        if let id = self.wallet!.id, let mail = email {
+          let docRef = db.collection(mail).document(id)
+          do {
+            try docRef.setData(from: wallet)
+          }
+          catch {
+            print(error)
+          }
+        }
+    }
+    
+    
+    //MARK: - prepare
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destino = segue.destination as? End, let originAmount = originField.text, let destinyAmount = destinyField.text {
+            destino.email = email
+            if let oCurrency = originCurrency, let dCurrency = destinyCurrency {
+                oCurrency.amount -=  (Float(originAmount) ?? 0)
+                destino.resta = originAmount
+                
+                dCurrency.amount += (Float(destinyAmount) ?? 0)
+                destino.suma = destinyAmount
+                
+                if dCurrency.isActive == false {
+                    dCurrency.isActive = true
+                }
+            }
+        }
+        storeData()
+    }
+    
+    
+    // Método del protocolo UITextFieldDelegate que se llama cada vez que se cambia el texto en el campo de texto
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Llama a la función para validar si el texto es numérico con un punto decimal
+        return validateNumericInput(textField: textField, replacementString: string)
+    }
 
+    // Función para validar si el texto ingresado es numérico con un punto decimal
+    func validateNumericInput(textField: UITextField, replacementString string: String) -> Bool {
+        // Obtener el texto completo después de la edición
+        let currentText = (textField.text ?? "") as NSString
+        let newText = currentText.replacingCharacters(in: NSRange(location: 0, length: currentText.length), with: string)
+        
+        // Permitir números enteros o números con un punto decimal
+        return newText.isEmpty || (Double(newText) != nil)  
+    }
+    
 }
