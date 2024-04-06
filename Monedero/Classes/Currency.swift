@@ -1,29 +1,38 @@
 //
-//  Currency.swift
+//  NewCurrency.swift
 //  Monedero
 //
-//  Created by Mateo Andres Perano on 27/03/2024.
+//  Created by Mateo Andres Perano on 03/04/2024.
 //
 
 import Foundation
 
 
-class Currency {
+class NewCurrency {
     
-    var balance: Float?
-    var origin: Country
+var amount : Float
+let country : Country
+var isActive : Bool
+let usdCotization : Float
+
+
+enum Country : String {
     
-    
-    
-    enum Country :String {
-        case Argentina = "ARS"
-        case Usa = "USD"
-        case Mexico = "MXN"
-        case Peru = "SOL"
-    }
-    
-    init(balance: Float? = nil, origin: Country) {
-        self.balance = balance
-        self.origin = origin
-    }
+    case Ars = "ARS🇦🇷"
+    case Usd = "USD🇺🇸"
+    case Mxn = "MXN🇲🇽"
+    case Sol = "SOL🇵🇪"
+}
+
+
+
+
+
+init(amount: Float, country: Country, isActive: Bool, usdCotization :Float){
+    self.amount = amount
+    self.country = country
+    self.isActive = isActive
+    self.usdCotization = usdCotization
+}
+
 }
