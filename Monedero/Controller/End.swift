@@ -23,7 +23,6 @@ class End: UIViewController {
     
     
     //variables
-    var myBalance: Balance?
     var suma: String?
     var resta: String?
     var email: String?

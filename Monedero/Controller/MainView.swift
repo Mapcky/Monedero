@@ -11,16 +11,20 @@ import FirebaseFirestoreSwift
 
 
 class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    
+    
+    private var usdConversions : ConversionResult?
+    private var myCotizations : [Cotization] = []
 
-    //Legacy variables
-    private var myBalance: Balance?
-    let cotization = Cotization()
+    
     
     //Outlets
     @IBOutlet weak var navigation: UINavigationItem!
     @IBOutlet weak var loading: UIActivityIndicatorView!
     @IBOutlet weak var collectionView: UICollectionView!
-
+    @IBOutlet weak var footerImage: UIImageView!
+    
     //Variables para actual funcionamiento
     var wallet :Wallet?
     var email: String?
@@ -31,20 +35,21 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.isPagingEnabled = true
+        
+        
+        
         gotData {[weak self] in
             // Una vez que los datos se hayan cargado, actualiza la vista
             self?.loading.stopAnimating()
             self?.loading.isHidden = true
             self?.collectionView.reloadData()
-            self?.oldSystem()}
+            self?.getCotizations{[weak self] in
+                self?.money()}
+        }
     }
 
     
     
-    //Accion de los botones 0 a 3
-    @IBAction func buttonAction(_ sender: Any) {
-        performSegue(withIdentifier: "traderView", sender: sender)
-    }
     //Accion del boton 4, hacia el NewTrader
     @IBAction func NewTrader(_ sender: Any) {
         performSegue(withIdentifier: "2NewTrader", sender: sender)
@@ -54,36 +59,19 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     //MARK: prepare
     //Override de prepare, se envian los datos necesariosa Trader
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destino = segue.destination as? Trader, let buttonPressed = sender as? UIButton {
-            
-            //Se envian los datos necesarios para el antiguo sistema trader
-            if buttonPressed.tag == 0 {
-                destino.countryCotization = CotizacionPais(pais: .Arg, exc1: cotization.arsToUsd, exc2: cotization.arsToMxn, exc3: cotization.arsToSol)
-                destino.balance = myBalance
-            }
-            else if buttonPressed.tag == 1{
-                destino.countryCotization = CotizacionPais(pais: .Usa, exc1: cotization.usdToArs, exc2: cotization.usdToMxn, exc3: cotization.usdToSol)
-                destino.balance = myBalance
-            }
-            else if buttonPressed.tag == 2{
-                destino.countryCotization = CotizacionPais(pais: .Mex, exc1: cotization.mxnToArs, exc2: cotization.mxnToUsd, exc3: cotization.mxnToSol)
-                destino.balance = myBalance
-            }
-            else if buttonPressed.tag == 3{
-                destino.countryCotization = CotizacionPais(pais: .Per, exc1: cotization.solToArs, exc2: cotization.solToUsd, exc3: cotization.solToMxn)
-                destino.balance = myBalance
-            }
-            destino.email = email
-        }
-        
         //Se envian wallet y email para el actual funcionamiento de NewTrader
         if let destino = segue.destination as? NewTrader, let buttonPressed = sender as? UIButton {
-            if buttonPressed.tag == 4{
+            if buttonPressed.tag == 0{
                 destino.email = email
                 destino.wallet = wallet!
+                destino.myCotizations = myCotizations
             }
         }
-        
+        if let destino = segue.destination as? LoginViewController, let buttonPressed = sender as? UIButton {
+            if buttonPressed.tag == 0{
+                destino.navigationItem.hidesBackButton = true
+            }
+        }
     }
     
     
@@ -131,7 +119,6 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
                     count += 1
                 }
             }
-            
         }
         return count
     }
@@ -148,9 +135,6 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         cell.moneyLabel.textColor = .white
         cell.backgroundColor = .lightGray
         cell.layer.cornerRadius = 30
-        
-        
-    
     return cell
     }
     
@@ -163,37 +147,76 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    // MARK: - LegacySystem
-    func oldSystem() {
-        var ars :Float = 0
-        var usd :Float = 0
-        var mxn :Float = 0
-        var sol :Float = 0
-        for w8 in wallet!.myMoney {
-            
-            if w8.country == .Ars {
-                ars = w8.amount
-            }
-            if w8.country == .Usd {
-                usd = w8.amount
-            }
-            if w8.country == .Mxn {
-                mxn = w8.amount
-            }
-            if w8.country == .Sol {
-                sol = w8.amount
-            }
-        }
-        myBalance = Balance(ars: ars, usd: usd, mxn: mxn, sol: sol)
+
+    @IBAction func logOut(_ sender: Any) {
+        performSegue(withIdentifier: "logOut", sender: sender)
     }
     
+    
+    
+    
+    
+    func getCotizations(completion: @escaping () -> Void) {
+        // La URL de la API
+        let apiURL = "https://api.cambio.today/v1/full/USD/"
+        
+        let apiKey = "json?key=50424|vdmb2r6s1mLyfwZra067"
+        
+        let apiURLString = apiURL + apiKey
 
+        // Crear la URL a partir de la cadena
+        guard let url = URL(string: apiURLString) else {
+            print("URL inválida")
+            return
+        }
+
+        // Crear una tarea de URLSession para obtener los datos JSON
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            // Manejar cualquier error
+            if let error = error {
+                print("Error al obtener datos:", error)
+                return
+            }
+            
+            // Verificar si los datos existen
+            guard let jsonData = data else {
+                print("Datos no encontrados")
+                return
+            }
+            
+            do {
+                // Decodificar los datos JSON en la estructura definida
+                self.usdConversions = try JSONDecoder().decode(ConversionResult.self, from: jsonData)
+                
+                // Llamar a la clausura de finalización después de que se hayan procesado los datos
+                completion()
+            } catch {
+                print("Error al decodificar el JSON:", error)
+            }
+        }
+
+        task.resume()
+    }
+    
+   
+    func money() {
+        if let conv = usdConversions?.result.conversion{
+            
+            if let wall = wallet?.myMoney {
+                for con in conv {
+                    if wall.contains(where: { whale in
+                        return whale.country.rawValue == con.to
+                    }) {
+                        myCotizations.append(Cotization(value: Float(1 / con.rate), country: con.to))
+                    }
+                }
+            }
+        }
+        myCotizations.append(Cotization(value: 1, country: "USD"))
+    }
+    
+    
+    
 }
+    
 

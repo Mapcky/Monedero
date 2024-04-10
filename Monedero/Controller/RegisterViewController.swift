@@ -52,26 +52,28 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
             var booleanMxn = true
             var booleanSol = true
             
-            if (ars == 0) {
+            if ars == 0  {
                 booleanArs = false
             }
-            if (usd == 0) {
+            if usd == 0  {
                 booleanUsd = false
             }
-            if (mxn == 0) {
+            if mxn == 0  {
                 booleanMxn = false
             }
-            if (sol == 0) {
+            if sol == 0  {
                 booleanSol = false
             }
             
-            let c1 = Currency(amount: ars, country: .Ars, isActive: booleanArs, usdCotization: 0.0012)
-            let c2 = Currency(amount: usd, country: .Usd, isActive: booleanUsd, usdCotization: 1)
-            let c3 = Currency(amount: mxn, country: .Mxn, isActive: booleanMxn, usdCotization: 0.060)
-            let c4 = Currency(amount: sol, country: .Sol, isActive: booleanSol, usdCotization: 0.27)
+            let c1 = Currency(amount: ars, country: .Ars, isActive: booleanArs)//, usdCotization: 0.0012)
+            let c2 = Currency(amount: usd, country: .Usd, isActive: booleanUsd)//, usdCotization: 1)
+            let c3 = Currency(amount: mxn, country: .Mxn, isActive: booleanMxn)//, usdCotization: 0.060)
+            let c4 = Currency(amount: sol, country: .Pen, isActive: booleanSol)//, usdCotization: 0.27)
+            let c5 = Currency(amount: 0, country: .Eur, isActive: false)
             
-            wallet = Wallet(money: [c1,c2,c3,c4])
-            storeData(whale: self.wallet!)
+            wallet = Wallet(money: [c1,c2,c3,c4,c5])
+            //storeData(whale: self.wallet!)
+            FirebaseManager.shared.setData(email: email!, wallet: wallet!)
             performSegue(withIdentifier: "2Main", sender: sender)
         }
         
@@ -119,7 +121,7 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
     
     
     
-    
+    /*
     //MARK: - storeData
     
     //Metodo para almacenar el objeto Wallet en FireStore
@@ -135,6 +137,6 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
             }
         }
     }
-    
+    */
 }
 

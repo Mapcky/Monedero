@@ -64,10 +64,7 @@ class LoginViewController: UIViewController {
         
         if let destino = segue.destination as? MainView{
             destino.email = emailField.text
+            destino.navigationItem.hidesBackButton = true
         }
     }
-    
-    
-    
-    
 }

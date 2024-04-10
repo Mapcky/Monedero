@@ -11,20 +11,24 @@ import FirebaseFirestoreSwift
 
 class NewTrader: UIViewController,UITextFieldDelegate {
     
+    var myCotizations: [Cotization]?
     //Variables
     var email: String?
     var wallet : Wallet?
-
+    
     //Button & Menu Outlets
-    var menuActions = [UIAction]()
-    var menuActionsB2 = [UIAction]()
+    private var menuActions = [UIAction]()
+    private var menuActionsB2 = [UIAction]()
     @IBOutlet weak var excButton: UIButton!
     @IBOutlet weak var b2: UIButton!
     @IBOutlet weak var popButton: UIButton!
     
-    //Labels Outlets
-    var originCurrency :Currency?
-    var destinyCurrency :Currency?
+    //Selected items variables
+    private var originCurrency :Currency?
+    private var destinyCurrency :Currency?
+    private var leftCountry: Cotization?
+    private var rightCountry: Cotization?
+    
     
     //TextFields Outlets
     @IBOutlet weak var originField: UITextField!
@@ -34,15 +38,11 @@ class NewTrader: UIViewController,UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         originField.delegate = self
         destinyField.delegate = self
         excButton.isEnabled = false
         setPopButton()
-        
-        originCurrency = wallet!.myMoney.first
-        destinyCurrency = wallet!.myMoney.first
-        
     }
     
     //MARK: - SetPopButtons
@@ -62,6 +62,22 @@ class NewTrader: UIViewController,UITextFieldDelegate {
         let menub2 = UIMenu(children: menuActionsB2)
         popButton.menu = menu
         b2.menu = menub2
+        
+        let actives = wallet?.myMoney.filter{ $0.isActive == true }
+        
+        originCurrency = actives?.first
+        destinyCurrency = wallet?.myMoney.first
+        
+        if let convers = myCotizations {
+            for conv in convers {
+                if originCurrency?.country.rawValue == conv.country {
+                    leftCountry = conv
+                }
+                if destinyCurrency?.country.rawValue == conv.country {
+                    rightCountry = conv
+                }
+            }
+        }
     }
     
     
@@ -89,28 +105,29 @@ class NewTrader: UIViewController,UITextFieldDelegate {
             
             switch fieldModify.tag {
             case 0:
-                if (Float (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Float (originField.text ?? "0") ?? 0) < 0 {
+                if (Float (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Float (originField.text ?? "0") ?? 0) < 0  || popButton.currentTitle == b2.currentTitle{
                     //originField.text = String(originCurrency!.amount)
                     excButton.isEnabled = false
                 }
                 else {
                     excButton.isEnabled = true
                 }
-                let calculo = (Float(originField.text!) ?? 0) * originCurrency!.usdCotization
-                destinyField.text = String(format: "%.3f",calculo / destinyCurrency!.usdCotization)
+                let calculo = (Float(originField.text!) ?? 0) * (leftCountry?.value ?? 0)
+                destinyField.text = String(format: "%.3f",calculo / (rightCountry?.value ?? 0))
                 break
                 
             case 1:
-                if (Float (destinyField.text ?? "0") ?? 0) > destinyCurrency!.amount || (Float (originField.text ?? "0") ?? 0) < 0  {
-                   // destinyField.text = String(destinyCurrency!.amount)
+                let calculo2 = (Float(destinyField.text!) ?? 0) * (rightCountry?.value ?? 0)
+                originField.text = String(format: "%.3f",calculo2 / (leftCountry?.value ?? 0))
+                
+                if (Float (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Float (destinyField.text ?? "0") ?? 0) < 0  || popButton.currentTitle == b2.currentTitle{
+                    // destinyField.text = String(destinyCurrency!.amount)
                     excButton.isEnabled = false
                 }
                 else {
                     excButton.isEnabled = true
                 }
-                let calculo2 = (Float(destinyField.text!) ?? 0) * destinyCurrency!.usdCotization
-                print(calculo2)
-                originField.text = String(format: "%.3f",calculo2 / originCurrency!.usdCotization)
+                
                 break
             default:
                 break
@@ -138,25 +155,36 @@ class NewTrader: UIViewController,UITextFieldDelegate {
                 destinyCurrency = bag
             }
         }
+        if let cotization = myCotizations {
+            for conv in cotization {
+                if popButton.currentTitle == conv.country{
+                    leftCountry = conv
+                }
+                if b2.currentTitle == conv.country{
+                    rightCountry = conv
+                }
+                
+            }
+        }
         destinyField.text = ""
         originField.text = ""
     }
-    
-    //MARK: - storeData
-    //Guardado de los datos en firebase con el balance actualizado
+    /*
+     //MARK: - storeData
+     //Guardado de los datos en firebase con el balance actualizado
     func storeData() {
         let db = Firestore.firestore()
         if let id = self.wallet!.id, let mail = email {
-          let docRef = db.collection(mail).document(id)
-          do {
-            try docRef.setData(from: wallet)
-          }
-          catch {
-            print(error)
-          }
+            let docRef = db.collection(mail).document(id)
+            do {
+                try docRef.setData(from: wallet)
+            }
+            catch {
+                print(error)
+            }
         }
     }
-    
+     */
     
     //MARK: - prepare
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -173,8 +201,10 @@ class NewTrader: UIViewController,UITextFieldDelegate {
                     dCurrency.isActive = true
                 }
             }
+            destino.navigationItem.hidesBackButton = true
         }
-        storeData()
+        //storeData()
+        FirebaseManager.shared.updateData(email: email!, wallet: wallet!)
     }
     
     
@@ -183,7 +213,7 @@ class NewTrader: UIViewController,UITextFieldDelegate {
         // Llama a la función para validar si el texto es numérico con un punto decimal
         return validateNumericInput(textField: textField, replacementString: string)
     }
-
+    
     // Función para validar si el texto ingresado es numérico con un punto decimal
     func validateNumericInput(textField: UITextField, replacementString string: String) -> Bool {
         // Obtener el texto completo después de la edición
@@ -191,7 +221,8 @@ class NewTrader: UIViewController,UITextFieldDelegate {
         let newText = currentText.replacingCharacters(in: NSRange(location: 0, length: currentText.length), with: string)
         
         // Permitir números enteros o números con un punto decimal
-        return newText.isEmpty || (Double(newText) != nil)  
+        return newText.isEmpty || (Double(newText) != nil)
     }
+    
     
 }
