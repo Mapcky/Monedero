@@ -9,7 +9,7 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-class Currency :Codable{
+class Currency :Codable {
     
     var amount : Float
     let country : Country

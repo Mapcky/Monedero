@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import Firebase
 
 class LoginViewController: UIViewController {
 
@@ -25,16 +26,7 @@ class LoginViewController: UIViewController {
     //MARK: - Register
     //Registra un usuario usando FirebaseAuth, se envia el email a Register para su uso
     @IBAction func regBA(_ sender: UIButton) {
-        if let email = emailField.text, let pass = passField.text {
-            Auth.auth().createUser(withEmail: email, password: pass) {
-                (result, error) in
-                if error == nil {
-                    self.performSegue(withIdentifier: "register", sender: sender)
-
-                } else {}
-                
-            }
-        }
+        self.performSegue(withIdentifier: "register", sender: sender)
     }
     
     
@@ -47,7 +39,11 @@ class LoginViewController: UIViewController {
                 (result, error) in
                 if error == nil {
                     self.performSegue(withIdentifier: "Main", sender: sender)
-                } else {}
+                } else {
+                    if let error = error {
+               //         self.handleAuthError(error)
+                    }
+                }
             }
         }
     }
@@ -58,13 +54,38 @@ class LoginViewController: UIViewController {
     //MARK: - prepare
     //Prepare pertinentes para enviar los datos ya sea hacia RegisterViewController o MainView
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destino = segue.destination as? RegisterViewController{
+       /* if let destino = segue.destination as? RegisterViewController{
             destino.email = emailField.text
-        }
+        }*/
         
         if let destino = segue.destination as? MainView{
             destino.email = emailField.text
             destino.navigationItem.hidesBackButton = true
         }
     }
+    /*
+    
+    func handleAuthError(_ error: Error) {
+        // Obtener el código de error
+        let errorCode = AuthErrorCode(rawValue: error._code)
+
+        // Manejar el error según el código
+        switch errorCode {
+        case .invalidEmail:
+            // Mostrar un mensaje de error para un correo electrónico no válido
+            print("El correo electrónico no es válido.")
+        case .emailAlreadyInUse:
+            // Mostrar un mensaje de error para un correo electrónico ya en uso
+            print("El correo electrónico ya está en uso.")
+        case .wrongPassword:
+            // Mostrar un mensaje de error para una contraseña incorrecta
+            print("La contraseña es incorrecta.")
+        default:
+            // Mostrar un mensaje de error genérico
+            print("Error de autenticación: \(error.localizedDescription)")
+        }
+    }
+
+    */
+    
 }

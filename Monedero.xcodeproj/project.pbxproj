@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		30271F812B9F7C8D002FB1FC /* End.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30271F802B9F7C8C002FB1FC /* End.swift */; };
-		306C38F42BBF1948005A5613 /* Wallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306C38F32BBF1948005A5613 /* Wallet.swift */; };
+		306C38F42BBF1948005A5613 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306C38F32BBF1948005A5613 /* User.swift */; };
 		3072A44A2BC5E7FE00A14617 /* Cotization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3072A4492BC5E7FE00A14617 /* Cotization.swift */; };
 		3072A44C2BC5ED5200A14617 /* ConversionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3072A44B2BC5ED5200A14617 /* ConversionResult.swift */; };
 		309F72792BB4B14900B87F63 /* MyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309F72782BB4B14900B87F63 /* MyCollectionViewCell.swift */; };
@@ -19,6 +19,7 @@
 		309F72842BB4BC3E00B87F63 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 309F72832BB4BC3E00B87F63 /* FirebaseFirestore */; };
 		309F72862BB4BC3E00B87F63 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 309F72852BB4BC3E00B87F63 /* FirebaseFirestoreSwift */; };
 		309F72882BB4BD6600B87F63 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 309F72872BB4BD6600B87F63 /* GoogleService-Info.plist */; };
+		30A4913A2BD1C797001DE187 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A491392BD1C797001DE187 /* ProfileViewController.swift */; };
 		30B4C0C62BC5774500411E82 /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B4C0C52BC5774500411E82 /* FirebaseManager.swift */; };
 		30D49DE62BBD82B600FA40C3 /* NewTrader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D49DE52BBD82B600FA40C3 /* NewTrader.swift */; };
 		30D49DE82BBD831900FA40C3 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D49DE72BBD831900FA40C3 /* Currency.swift */; };
@@ -32,13 +33,14 @@
 
 /* Begin PBXFileReference section */
 		30271F802B9F7C8C002FB1FC /* End.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = End.swift; sourceTree = "<group>"; };
-		306C38F32BBF1948005A5613 /* Wallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wallet.swift; sourceTree = "<group>"; };
+		306C38F32BBF1948005A5613 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		3072A4492BC5E7FE00A14617 /* Cotization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cotization.swift; sourceTree = "<group>"; };
 		3072A44B2BC5ED5200A14617 /* ConversionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionResult.swift; sourceTree = "<group>"; };
 		309F72782BB4B14900B87F63 /* MyCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCollectionViewCell.swift; sourceTree = "<group>"; };
 		309F727A2BB4B17200B87F63 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		309F727C2BB4B26B00B87F63 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		309F72872BB4BD6600B87F63 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		30A491392BD1C797001DE187 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		30B4C0C52BC5774500411E82 /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		30D49DE52BBD82B600FA40C3 /* NewTrader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrader.swift; sourceTree = "<group>"; };
 		30D49DE72BBD831900FA40C3 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 				309F727A2BB4B17200B87F63 /* LoginViewController.swift */,
 				309F727C2BB4B26B00B87F63 /* RegisterViewController.swift */,
 				30D49DE52BBD82B600FA40C3 /* NewTrader.swift */,
+				30A491392BD1C797001DE187 /* ProfileViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -102,7 +105,7 @@
 			children = (
 				309F72782BB4B14900B87F63 /* MyCollectionViewCell.swift */,
 				30D49DE72BBD831900FA40C3 /* Currency.swift */,
-				306C38F32BBF1948005A5613 /* Wallet.swift */,
+				306C38F32BBF1948005A5613 /* User.swift */,
 				30B4C0C52BC5774500411E82 /* FirebaseManager.swift */,
 				3072A4492BC5E7FE00A14617 /* Cotization.swift */,
 				3072A44B2BC5ED5200A14617 /* ConversionResult.swift */,
@@ -225,9 +228,10 @@
 				30FC5F512B97D1C5005A4CC6 /* AppDelegate.swift in Sources */,
 				309F727D2BB4B26B00B87F63 /* RegisterViewController.swift in Sources */,
 				309F72792BB4B14900B87F63 /* MyCollectionViewCell.swift in Sources */,
+				30A4913A2BD1C797001DE187 /* ProfileViewController.swift in Sources */,
 				30B4C0C62BC5774500411E82 /* FirebaseManager.swift in Sources */,
 				30FC5F532B97D1C5005A4CC6 /* SceneDelegate.swift in Sources */,
-				306C38F42BBF1948005A5613 /* Wallet.swift in Sources */,
+				306C38F42BBF1948005A5613 /* User.swift in Sources */,
 				30271F812B9F7C8D002FB1FC /* End.swift in Sources */,
 				30D49DE62BBD82B600FA40C3 /* NewTrader.swift in Sources */,
 				3072A44C2BC5ED5200A14617 /* ConversionResult.swift in Sources */,

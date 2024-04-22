@@ -6,15 +6,13 @@
 //
 
 import UIKit
-import FirebaseFirestore
-import FirebaseFirestoreSwift
+
 
 class NewTrader: UIViewController,UITextFieldDelegate {
     
     var myCotizations: [Cotization]?
     //Variables
-    var email: String?
-    var wallet : Wallet?
+    var user : User?
     
     //Button & Menu Outlets
     private var menuActions = [UIAction]()
@@ -49,7 +47,7 @@ class NewTrader: UIViewController,UITextFieldDelegate {
     
     //Armado de las menu actions de los botones
     func setPopButton() {
-        for selector in wallet!.myMoney{
+        for selector in user!.wallet{
             if selector.isActive == true {
                 let action = UIAction(title : selector.country.rawValue, handler: {action in self.handleMenuSelection(selector.country.rawValue) })
                 menuActions.append(action)
@@ -63,10 +61,10 @@ class NewTrader: UIViewController,UITextFieldDelegate {
         popButton.menu = menu
         b2.menu = menub2
         
-        let actives = wallet?.myMoney.filter{ $0.isActive == true }
+        let actives = user?.wallet.filter{ $0.isActive == true }
         
         originCurrency = actives?.first
-        destinyCurrency = wallet?.myMoney.first
+        destinyCurrency = user?.wallet.first
         
         if let convers = myCotizations {
             for conv in convers {
@@ -147,7 +145,7 @@ class NewTrader: UIViewController,UITextFieldDelegate {
     func handleMenuSelection(_ option: String) {
         // Obtiene el título del botón cuando una opcion es seleccionada
         sameCountry()
-        for bag in wallet!.myMoney {
+        for bag in user!.wallet {
             if popButton.currentTitle == bag.country.rawValue {
                 originCurrency = bag
             }
@@ -189,7 +187,7 @@ class NewTrader: UIViewController,UITextFieldDelegate {
     //MARK: - prepare
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destino = segue.destination as? End, let originAmount = originField.text, let destinyAmount = destinyField.text {
-            destino.email = email
+            destino.email = user?.email
             if let oCurrency = originCurrency, let dCurrency = destinyCurrency {
                 oCurrency.amount -=  (Float(originAmount) ?? 0)
                 destino.resta = originAmount
@@ -204,7 +202,7 @@ class NewTrader: UIViewController,UITextFieldDelegate {
             destino.navigationItem.hidesBackButton = true
         }
         //storeData()
-        FirebaseManager.shared.updateData(email: email!, wallet: wallet!)
+        FirebaseManager.shared.updateData(user: user!)
     }
     
     

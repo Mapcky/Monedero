@@ -20,13 +20,13 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     
     
     //Outlets
+    @IBOutlet weak var profileButton: UIButton!
     @IBOutlet weak var navigation: UINavigationItem!
     @IBOutlet weak var loading: UIActivityIndicatorView!
     @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var footerImage: UIImageView!
     
     //Variables para actual funcionamiento
-    var wallet :Wallet?
+    var user :User?
     var email: String?
 
     override func viewDidLoad() {
@@ -35,7 +35,7 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.isPagingEnabled = true
-        
+        profileButton.isHidden = true
         
         
         gotData {[weak self] in
@@ -43,6 +43,8 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
             self?.loading.stopAnimating()
             self?.loading.isHidden = true
             self?.collectionView.reloadData()
+            self?.profileButton.setTitle("Hola \(self?.user?.name ?? "User")", for: .normal)
+            self?.profileButton.isHidden = false
             self?.getCotizations{[weak self] in
                 self?.money()}
         }
@@ -62,14 +64,18 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         //Se envian wallet y email para el actual funcionamiento de NewTrader
         if let destino = segue.destination as? NewTrader, let buttonPressed = sender as? UIButton {
             if buttonPressed.tag == 0{
-                destino.email = email
-                destino.wallet = wallet!
+                destino.user = user!
                 destino.myCotizations = myCotizations
             }
         }
         if let destino = segue.destination as? LoginViewController, let buttonPressed = sender as? UIButton {
-            if buttonPressed.tag == 0{
+            if buttonPressed.tag == 4{
                 destino.navigationItem.hidesBackButton = true
+            }
+        }
+        if let destino = segue.destination as? ProfileViewController, let buttonPressed = sender as? UIButton {
+            if buttonPressed.tag == 2{
+                destino.name = user?.name
             }
         }
     }
@@ -93,8 +99,8 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
                     //Itera sobre todos los documentos de la collection, sin embargo solo recuperaremos el unico que existe
                     for document in documents {
                         do {
-                            if let whale = try? document.data(as: Wallet.self) {
-                                self.wallet = whale
+                            if let whale = try? document.data(as: User.self) {
+                                self.user = whale
                                 completion()
                             }
                         }
@@ -113,8 +119,8 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         var count = 0
-        if let w8 = wallet {
-            for wall in w8.myMoney {
+        if let w8 = user {
+            for wall in w8.wallet {
                 if wall.isActive == true {
                     count += 1
                 }
@@ -127,7 +133,7 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         // Filtrar los elementos del arreglo currency donde isActive es true
-        let activeCurrencies = wallet?.myMoney.filter { $0.isActive == true }
+        let activeCurrencies = user?.wallet.filter { $0.isActive == true }
 
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CustomCell", for: indexPath) as! MyCollectionViewCell
         cell.countryLabel.text = activeCurrencies?[indexPath.row].country.rawValue
@@ -202,7 +208,7 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     func money() {
         if let conv = usdConversions?.result.conversion{
             
-            if let wall = wallet?.myMoney {
+            if let wall = user?.wallet {
                 for con in conv {
                     if wall.contains(where: { whale in
                         return whale.country.rawValue == con.to
@@ -216,6 +222,10 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     }
     
     
+    @IBAction func goProfile(_ sender: Any) {
+        performSegue(withIdentifier: "profile", sender: sender)
+        
+    }
     
 }
     
