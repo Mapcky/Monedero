@@ -10,9 +10,10 @@ import UIKit
 
 class NewTrader: UIViewController,UITextFieldDelegate {
     
-    var myCotizations: [Cotization]?
     //Variables
     var user : User?
+    var myCotizations: [Cotization]?
+    private let enumCountries : [Country] = [.Ars,.Usd,.Mxn,.Pen,.Eur]
     
     //Button & Menu Outlets
     private var menuActions = [UIAction]()
@@ -36,7 +37,6 @@ class NewTrader: UIViewController,UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         originField.delegate = self
         destinyField.delegate = self
         excButton.isEnabled = false
@@ -47,31 +47,38 @@ class NewTrader: UIViewController,UITextFieldDelegate {
     
     //Armado de las menu actions de los botones
     func setPopButton() {
+        
         for selector in user!.wallet{
             if selector.isActive == true {
-                let action = UIAction(title : selector.country.rawValue, handler: {action in self.handleMenuSelection(selector.country.rawValue) })
+                let action = UIAction(title : selector.country.rawValue, handler: {action in self.handleMenuSelection(selector.country.rawValue)})
                 menuActions.append(action)
             }
-            let actionB2 = UIAction(title : selector.country.rawValue, handler: {actionB2 in self.handleMenuSelection(selector.country.rawValue)})
+        }
+        
+        for selector in enumCountries{
+            let actionB2 = UIAction(title : selector.rawValue, handler: {action in self.handleMenuSelection(selector.rawValue) })
             menuActionsB2.append(actionB2)
         }
+        
         
         let menu = UIMenu(children: menuActions)
         let menub2 = UIMenu(children: menuActionsB2)
         popButton.menu = menu
         b2.menu = menub2
         
-        let actives = user?.wallet.filter{ $0.isActive == true }
         
-        originCurrency = actives?.first
-        destinyCurrency = user?.wallet.first
+        originCurrency = user?.wallet.first
+        
+        
+        //Currency de la derecha, cambiara sus atributos segun su uso
+        destinyCurrency = Currency(amount: 0, country: .Ars, isActive: true)
         
         if let convers = myCotizations {
             for conv in convers {
                 if originCurrency?.country.rawValue == conv.country {
                     leftCountry = conv
                 }
-                if destinyCurrency?.country.rawValue == conv.country {
+                if destinyCurrency!.country.rawValue == conv.country {
                     rightCountry = conv
                 }
             }
@@ -149,8 +156,10 @@ class NewTrader: UIViewController,UITextFieldDelegate {
             if popButton.currentTitle == bag.country.rawValue {
                 originCurrency = bag
             }
-            if b2.currentTitle == bag.country.rawValue {
-                destinyCurrency = bag
+        }
+        for enums in enumCountries {
+            if b2.currentTitle == enums.rawValue {
+                destinyCurrency!.country = enums
             }
         }
         if let cotization = myCotizations {
@@ -161,43 +170,58 @@ class NewTrader: UIViewController,UITextFieldDelegate {
                 if b2.currentTitle == conv.country{
                     rightCountry = conv
                 }
-                
             }
+            destinyField.text = ""
+            originField.text = ""
         }
-        destinyField.text = ""
-        originField.text = ""
     }
     /*
      //MARK: - storeData
      //Guardado de los datos en firebase con el balance actualizado
-    func storeData() {
-        let db = Firestore.firestore()
-        if let id = self.wallet!.id, let mail = email {
-            let docRef = db.collection(mail).document(id)
-            do {
-                try docRef.setData(from: wallet)
-            }
-            catch {
-                print(error)
-            }
-        }
-    }
+     func storeData() {
+     let db = Firestore.firestore()
+     if let id = self.wallet!.id, let mail = email {
+     let docRef = db.collection(mail).document(id)
+     do {
+     try docRef.setData(from: wallet)
+     }
+     catch {
+     print(error)
+     }
+     }
+     }
      */
     
     //MARK: - prepare
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destino = segue.destination as? End, let originAmount = originField.text, let destinyAmount = destinyField.text {
-            destino.email = user?.email
-            if let oCurrency = originCurrency, let dCurrency = destinyCurrency {
+        if let destino = segue.destination as? End, let originAmount = originField.text, let destinyAmount = destinyField.text, let usr = user {
+            destino.email = usr.email
+            if let oCurrency = originCurrency {
                 oCurrency.amount -=  (Float(originAmount) ?? 0)
                 destino.resta = originAmount
+                var exists:Bool = false
                 
-                dCurrency.amount += (Float(destinyAmount) ?? 0)
+                for myWallet in usr.wallet {
+                    if myWallet.country == destinyCurrency!.country {
+                        exists = true
+                        destinyCurrency = myWallet
+                    }
+                }
+                
+                
+                if exists == false {
+                    destinyCurrency!.amount += (Float(destinyAmount) ?? 0)
+                    /*
+                     if dCurrency.isActive == false {
+                     dCurrency.isActive = true
+                     }*/
+                    usr.wallet.append(destinyCurrency!)
+                }
+                else {
+                    destinyCurrency!.amount += (Float(destinyAmount) ?? 0)
+                }
                 destino.suma = destinyAmount
                 
-                if dCurrency.isActive == false {
-                    dCurrency.isActive = true
-                }
             }
             destino.navigationItem.hidesBackButton = true
         }
@@ -224,3 +248,4 @@ class NewTrader: UIViewController,UITextFieldDelegate {
     
     
 }
+

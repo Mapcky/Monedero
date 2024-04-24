@@ -33,6 +33,7 @@ class LoginViewController: UIViewController {
     
     //MARK: - Login
     //Login, una vez verificados los datos de login mediante FirebaseAuth, procede a la pantalla Main
+    /*
     @IBAction func logBA(_ sender: UIButton) {
         if let email = emailField.text, let pass = passField.text {
             Auth.auth().signIn(withEmail: email, password: pass) {
@@ -41,15 +42,42 @@ class LoginViewController: UIViewController {
                     self.performSegue(withIdentifier: "Main", sender: sender)
                 } else {
                     if let error = error {
-               //         self.handleAuthError(error)
                     }
                 }
             }
         }
     }
+    */
+    @IBAction func logBA(_ sender: UIButton) {
+        if let email = emailField.text, let pass = passField.text {
+            Auth.auth().signIn(withEmail: email, password: pass) { [weak self] (result, error) in
+                guard let strongSelf = self else { return }
+                if let error = error as NSError? {
+                    // Manejar el error de inicio de sesión
+                    switch error.code {
+                    case AuthErrorCode.invalidEmail.rawValue:
+                        strongSelf.showAlert(title: "Error", message: "Correo electrónico inválido")
+                    case AuthErrorCode.userNotFound.rawValue:
+                        strongSelf.showAlert(title: "Error", message: "Usuario no encontrado")
+                    case AuthErrorCode.wrongPassword.rawValue:
+                        strongSelf.showAlert(title: "Error", message: "Contraseña incorrecta")
+                    default:
+                        strongSelf.showAlert(title: "Error", message: error.localizedDescription)
+                    }
+                    return
+                }
+                // Inicio de sesión exitoso, continuar con la navegación
+                strongSelf.performSegue(withIdentifier: "Main", sender: sender)
+            }
+        }
+    }
     
-    
-    
+    // Función para mostrar una alerta
+    func showAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alertController, animated: true, completion: nil)
+    }
     
     //MARK: - prepare
     //Prepare pertinentes para enviar los datos ya sea hacia RegisterViewController o MainView

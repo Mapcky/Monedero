@@ -16,6 +16,7 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     
     private var usdConversions : ConversionResult?
     private var myCotizations : [Cotization] = []
+    private let enumCountries : [Country] = [.Ars,.Usd,.Mxn,.Pen,.Eur]
 
     
     
@@ -207,14 +208,11 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
    
     func money() {
         if let conv = usdConversions?.result.conversion{
-            
-            if let wall = user?.wallet {
-                for con in conv {
-                    if wall.contains(where: { whale in
-                        return whale.country.rawValue == con.to
-                    }) {
-                        myCotizations.append(Cotization(value: Float(1 / con.rate), country: con.to))
-                    }
+            for con in conv {
+                if enumCountries.contains(where: { whale in
+                    return whale.rawValue == con.to
+                }) {
+                    myCotizations.append(Cotization(value: Float(1 / con.rate), country: con.to))
                 }
             }
         }

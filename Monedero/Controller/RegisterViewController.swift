@@ -17,27 +17,22 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passField: UITextField!
     @IBOutlet weak var nameField: UITextField!
-    @IBOutlet weak var arsField: UITextField!
-    @IBOutlet weak var usdField: UITextField!
-    @IBOutlet weak var mxnField: UITextField!
-    @IBOutlet weak var solField: UITextField!
+    @IBOutlet weak var menuButton: UIButton!
+    @IBOutlet weak var moneyInput: UITextField!
+    
     
     //Variables
     var user :User?
-    //var email :String?
+    var wallet : [Currency] = []
+    var selectedCountry : Country?
+    var selectedCurrency : Currency?
+    private var menuActions = [UIAction]()
+    let enumCountries : [Country] = [.Ars,.Usd,.Mxn,.Pen,.Eur]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        arsField.delegate = self
-        usdField.delegate = self
-        mxnField.delegate = self
-        solField.delegate = self
-        
-        arsField.text = "0"
-        usdField.text = "0"
-        mxnField.text = "0"
-        solField.text = "0"
-        
+        //setWallet()
+        setMenuButton()
     }
     
     
@@ -47,42 +42,18 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
     
   //Funcion deposit, obtiene los datos de los textfield y los guarda en firebase bajo el email obtenido en LoginViewController
     @IBAction func deposit(_ sender: Any) {
-        if let ars = Float(arsField.text ?? "0"), let usd = Float(usdField.text ?? "0"), let mxn = Float(mxnField.text ?? "0"), let sol = Float(solField.text ?? "0"), let email = emailField.text, let pass = passField.text, let name = nameField.text {
-                Auth.auth().createUser(withEmail: email, password: pass) {
-                    (result, error) in
-                    if error == nil {
-                        
-                        //Boolean que definiran cuantas tarjetas se mostrarán
-                        var booleanArs = true
-                        var booleanUsd = true
-                        var booleanMxn = true
-                        var booleanSol = true
-                        
-                        if ars == 0  {
-                            booleanArs = false
-                        }
-                        if usd == 0  {
-                            booleanUsd = false
-                        }
-                        if mxn == 0  {
-                            booleanMxn = false
-                        }
-                        if sol == 0  {
-                            booleanSol = false
-                        }
-                        
-                        let c1 = Currency(amount: ars, country: .Ars, isActive: booleanArs)//, usdCotization: 0.0012)
-                        let c2 = Currency(amount: usd, country: .Usd, isActive: booleanUsd)//, usdCotization: 1)
-                        let c3 = Currency(amount: mxn, country: .Mxn, isActive: booleanMxn)//, usdCotization: 0.060)
-                        let c4 = Currency(amount: sol, country: .Pen, isActive: booleanSol)//, usdCotization: 0.27)
-                        let c5 = Currency(amount: 0, country: .Eur, isActive: false)
-                        
-                        self.user = User(email: email, name: name, wallet: [c1,c2,c3,c4,c5])
-                        //storeData(whale: self.wallet!)
-                        FirebaseManager.shared.setData(user: self.user!)
-                        self.performSegue(withIdentifier: "2Main", sender: sender)
-                    } else {}
+        if let email = emailField.text, let pass = passField.text, let name = nameField.text, let money = moneyInput.text, let sCountry = selectedCountry {
+            Auth.auth().createUser(withEmail: email, password: pass) {
+                (result, error) in
+                if error == nil {
                     
+                    self.selectedCurrency = Currency(amount: (Float (money) ?? 0.0), country: sCountry, isActive: true)
+                    self.wallet.append(self.selectedCurrency!)
+                    self.user = User(email: email, name: name, wallet: self.wallet)
+                    
+                    FirebaseManager.shared.setData(user: self.user!)
+                    self.performSegue(withIdentifier: "2Main", sender: sender)
+                } else {}
             }
         }
     }
@@ -101,49 +72,38 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
     
     
     
-    //MARK: - TextField Methods
+    //Se crean los items del menu desplegable del boton y liga dicho menú a este
+    func setMenuButton() {
+        for selector in enumCountries{
+            let action = UIAction(title : selector.rawValue, handler: {action in self.handleMenuSelection(selector.rawValue)})
+            menuActions.append(action)
+        }
+        let menu = UIMenu(children: menuActions)
+        menuButton.menu = menu
+    }
     
     
-    // Método del protocolo UITextFieldDelegate que se llama cada vez que se cambia el texto en el campo de texto
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        // Llama a la función para validar si el texto es numérico con un punto decimal
-        return validateNumericInput(textField: textField, replacementString: string)
-    }
-
-    // Función para validar si el texto ingresado es numérico con un punto decimal
-    func validateNumericInput(textField: UITextField, replacementString string: String) -> Bool {
-        // Obtener el texto completo después de la edición
-        let currentText = (textField.text ?? "") as NSString
-        let newText = currentText.replacingCharacters(in: NSRange(location: 0, length: currentText.length), with: string)
-        
-        // Permitir números enteros o números con un punto decimal
-        return newText.isEmpty || (Double(newText) != nil)
-    }
-
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        // Si el textField está vacío, establecer su texto como "0"
-        if textField.text == "" {
-            textField.text = "0"
+    //MARK: - HandleMenuSelection
+    //Se Ejecuta cada vez que se cambia la opcion seleccionada de los menues
+    func handleMenuSelection(_ option: String) {
+        // busca el objeto currency que coincida con el actual seleccionado por el boton
+        for enums in enumCountries {
+            if menuButton.currentTitle == enums.rawValue {
+                selectedCountry = enums
+            }
         }
     }
-    
-    
-    
     /*
-    //MARK: - storeData
-    
-    //Metodo para almacenar el objeto Wallet en FireStore
-    func storeData(whale: Wallet) {
-        let db = Firestore.firestore()
-        if let mail = email {
-            let collectionRef = db.collection(mail)
-            do {
-                try collectionRef.addDocument(from: whale)
-            }
-            catch {
-                print(error)
-            }
-        }
+    //Se crea el objeto wallet que luego será ligado al user, necesaria para el funcionamiento del menuButton
+    func setWallet() {
+        let c1 = Currency(amount: 0, country: .Ars, isActive: false)
+        let c2 = Currency(amount: 0, country: .Usd, isActive: false)
+        let c3 = Currency(amount: 0, country: .Mxn, isActive: false)
+        let c4 = Currency(amount: 0, country: .Pen, isActive: false)
+        let c5 = Currency(amount: 0, country: .Eur, isActive: false)
+        
+        wallet = [c1,c2,c3,c4,c5]
+        
     }
     */
 }

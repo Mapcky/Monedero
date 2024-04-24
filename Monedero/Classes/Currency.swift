@@ -12,7 +12,7 @@ import FirebaseFirestoreSwift
 class Currency :Codable {
     
     var amount : Float
-    let country : Country
+    var country : Country
     var isActive : Bool
     //var usdCotization : Float
     
