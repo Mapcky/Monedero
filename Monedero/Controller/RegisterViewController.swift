@@ -27,11 +27,14 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
     var selectedCountry : Country?
     var selectedCurrency : Currency?
     private var menuActions = [UIAction]()
-    let enumCountries : [Country] = [.Ars,.Usd,.Mxn,.Pen,.Eur]
+    let enumCountries = Country.allCases
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //setWallet()
+        emailField.delegate = self
+        passField.delegate = self
+        nameField.delegate = self
+        moneyInput.delegate = self
         setMenuButton()
     }
     
@@ -51,7 +54,7 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
                     self.wallet.append(self.selectedCurrency!)
                     self.user = User(email: email, name: name, wallet: self.wallet)
                     
-                    FirebaseManager.shared.setData(user: self.user!)
+                    FirebaseManager.shared.setUserData(user: self.user!)
                     self.performSegue(withIdentifier: "2Main", sender: sender)
                 } else {}
             }
@@ -80,31 +83,48 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
         }
         let menu = UIMenu(children: menuActions)
         menuButton.menu = menu
+        selectedCountry = enumCountries.first
     }
     
     
     //MARK: - HandleMenuSelection
     //Se Ejecuta cada vez que se cambia la opcion seleccionada de los menues
     func handleMenuSelection(_ option: String) {
-        // busca el objeto currency que coincida con el actual seleccionado por el boton
+        // busca el enum que coincida con el actual seleccionado por el boton
         for enums in enumCountries {
             if menuButton.currentTitle == enums.rawValue {
                 selectedCountry = enums
             }
         }
     }
+
     /*
-    //Se crea el objeto wallet que luego será ligado al user, necesaria para el funcionamiento del menuButton
-    func setWallet() {
-        let c1 = Currency(amount: 0, country: .Ars, isActive: false)
-        let c2 = Currency(amount: 0, country: .Usd, isActive: false)
-        let c3 = Currency(amount: 0, country: .Mxn, isActive: false)
-        let c4 = Currency(amount: 0, country: .Pen, isActive: false)
-        let c5 = Currency(amount: 0, country: .Eur, isActive: false)
-        
-        wallet = [c1,c2,c3,c4,c5]
-        
+    // Método del protocolo UITextFieldDelegate que se llama cada vez que se cambia el texto en el campo de texto
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Llama a la función para validar si el texto es numérico con un punto decimal
+        return validateNumericInput(textField: textField, replacementString: string)
     }
-    */
+    
+    // Función para validar si el texto ingresado es numérico con un punto decimal
+    func validateNumericInput(textField: UITextField, replacementString string: String) -> Bool {
+        // Obtener el texto completo después de la edición
+        let currentText = (textField.text ?? "") as NSString
+        let newText = currentText.replacingCharacters(in: NSRange(location: 0, length: currentText.length), with: string)
+        
+        // Permitir números enteros o números con un punto decimal
+        return newText.isEmpty || (Double(newText) != nil)
+    }
+     */
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // Llamar a resignFirstResponder() en el UITextField para ocultar el teclado
+        view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        // Ocultar el teclado cuando se presiona "return" en el teclado
+        textField.resignFirstResponder()
+        return true
+    }
 }
 

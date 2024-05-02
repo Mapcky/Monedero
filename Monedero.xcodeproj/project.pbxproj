@@ -23,6 +23,7 @@
 		30B4C0C62BC5774500411E82 /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B4C0C52BC5774500411E82 /* FirebaseManager.swift */; };
 		30D49DE62BBD82B600FA40C3 /* NewTrader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D49DE52BBD82B600FA40C3 /* NewTrader.swift */; };
 		30D49DE82BBD831900FA40C3 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D49DE72BBD831900FA40C3 /* Currency.swift */; };
+		30E0EA1C2BE40CD50070B1E4 /* DepositView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0EA1B2BE40CD50070B1E4 /* DepositView.swift */; };
 		30FC5F512B97D1C5005A4CC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30FC5F502B97D1C5005A4CC6 /* AppDelegate.swift */; };
 		30FC5F532B97D1C5005A4CC6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30FC5F522B97D1C5005A4CC6 /* SceneDelegate.swift */; };
 		30FC5F552B97D1C5005A4CC6 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30FC5F542B97D1C5005A4CC6 /* MainView.swift */; };
@@ -44,6 +45,7 @@
 		30B4C0C52BC5774500411E82 /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		30D49DE52BBD82B600FA40C3 /* NewTrader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrader.swift; sourceTree = "<group>"; };
 		30D49DE72BBD831900FA40C3 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
+		30E0EA1B2BE40CD50070B1E4 /* DepositView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepositView.swift; sourceTree = "<group>"; };
 		30FC5F4D2B97D1C5005A4CC6 /* Monedero.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Monedero.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		30FC5F502B97D1C5005A4CC6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		30FC5F522B97D1C5005A4CC6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 				309F727C2BB4B26B00B87F63 /* RegisterViewController.swift */,
 				30D49DE52BBD82B600FA40C3 /* NewTrader.swift */,
 				30A491392BD1C797001DE187 /* ProfileViewController.swift */,
+				30E0EA1B2BE40CD50070B1E4 /* DepositView.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -100,7 +103,7 @@
 			path = Base;
 			sourceTree = "<group>";
 		};
-		3026102F2B9FA7AD00890150 /* Classes */ = {
+		3026102F2B9FA7AD00890150 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				309F72782BB4B14900B87F63 /* MyCollectionViewCell.swift */,
@@ -110,7 +113,7 @@
 				3072A4492BC5E7FE00A14617 /* Cotization.swift */,
 				3072A44B2BC5ED5200A14617 /* ConversionResult.swift */,
 			);
-			path = Classes;
+			path = Model;
 			sourceTree = "<group>";
 		};
 		30FC5F442B97D1C5005A4CC6 = {
@@ -132,7 +135,7 @@
 		30FC5F4F2B97D1C5005A4CC6 /* Monedero */ = {
 			isa = PBXGroup;
 			children = (
-				3026102F2B9FA7AD00890150 /* Classes */,
+				3026102F2B9FA7AD00890150 /* Model */,
 				3026102E2B9FA78B00890150 /* Base */,
 				3026102C2B9FA76700890150 /* Views */,
 				3026102D2B9FA77B00890150 /* Controller */,
@@ -233,6 +236,7 @@
 				30FC5F532B97D1C5005A4CC6 /* SceneDelegate.swift in Sources */,
 				306C38F42BBF1948005A5613 /* User.swift in Sources */,
 				30271F812B9F7C8D002FB1FC /* End.swift in Sources */,
+				30E0EA1C2BE40CD50070B1E4 /* DepositView.swift in Sources */,
 				30D49DE62BBD82B600FA40C3 /* NewTrader.swift in Sources */,
 				3072A44C2BC5ED5200A14617 /* ConversionResult.swift in Sources */,
 				309F727B2BB4B17200B87F63 /* LoginViewController.swift in Sources */,

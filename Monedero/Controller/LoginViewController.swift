@@ -9,7 +9,7 @@ import UIKit
 import FirebaseAuth
 import Firebase
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController, UITextFieldDelegate {
 
     //TextFields Outlets
     @IBOutlet weak var emailField: UITextField!
@@ -21,6 +21,8 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        emailField.delegate = self
+        passField.delegate = self
     }
     
     //MARK: - Register
@@ -33,21 +35,6 @@ class LoginViewController: UIViewController {
     
     //MARK: - Login
     //Login, una vez verificados los datos de login mediante FirebaseAuth, procede a la pantalla Main
-    /*
-    @IBAction func logBA(_ sender: UIButton) {
-        if let email = emailField.text, let pass = passField.text {
-            Auth.auth().signIn(withEmail: email, password: pass) {
-                (result, error) in
-                if error == nil {
-                    self.performSegue(withIdentifier: "Main", sender: sender)
-                } else {
-                    if let error = error {
-                    }
-                }
-            }
-        }
-    }
-    */
     @IBAction func logBA(_ sender: UIButton) {
         if let email = emailField.text, let pass = passField.text {
             Auth.auth().signIn(withEmail: email, password: pass) { [weak self] (result, error) in
@@ -80,40 +67,23 @@ class LoginViewController: UIViewController {
     }
     
     //MARK: - prepare
-    //Prepare pertinentes para enviar los datos ya sea hacia RegisterViewController o MainView
+    //Prepare envia el email del login a mainView para que este peuda recuprar los datos de dicho usuario luego
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-       /* if let destino = segue.destination as? RegisterViewController{
-            destino.email = emailField.text
-        }*/
         
         if let destino = segue.destination as? MainView{
             destino.email = emailField.text
             destino.navigationItem.hidesBackButton = true
         }
     }
-    /*
     
-    func handleAuthError(_ error: Error) {
-        // Obtener el código de error
-        let errorCode = AuthErrorCode(rawValue: error._code)
-
-        // Manejar el error según el código
-        switch errorCode {
-        case .invalidEmail:
-            // Mostrar un mensaje de error para un correo electrónico no válido
-            print("El correo electrónico no es válido.")
-        case .emailAlreadyInUse:
-            // Mostrar un mensaje de error para un correo electrónico ya en uso
-            print("El correo electrónico ya está en uso.")
-        case .wrongPassword:
-            // Mostrar un mensaje de error para una contraseña incorrecta
-            print("La contraseña es incorrecta.")
-        default:
-            // Mostrar un mensaje de error genérico
-            print("Error de autenticación: \(error.localizedDescription)")
-        }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // Llamar a resignFirstResponder() en el UITextField para ocultar el teclado
+        view.endEditing(true)
     }
-
-    */
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        // Ocultar el teclado cuando se presiona "return" en el teclado
+        textField.resignFirstResponder()
+        return true
+    }
 }

@@ -19,8 +19,6 @@ class End: UIViewController {
     @IBOutlet weak var plusLabel: UILabel!
     
     
-    
-    
     //variables
     var suma: String?
     var resta: String?

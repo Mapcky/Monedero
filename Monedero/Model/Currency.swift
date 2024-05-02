@@ -14,22 +14,21 @@ class Currency :Codable {
     var amount : Float
     var country : Country
     var isActive : Bool
-    //var usdCotization : Float
     
     
-    init(amount: Float, country: Country, isActive: Bool){//, usdCotization :Float){
+    init(amount: Float, country: Country, isActive: Bool){
         self.amount = amount
         self.country = country
         self.isActive = isActive
-        //self.usdCotization = usdCotization
     }
     
 }
 
-public enum Country : String, Codable {
-    case Ars = "ARS"
-    case Usd = "USD"
-    case Mxn = "MXN"
-    case Pen = "PEN"
-    case Eur = "EUR"
+public enum Country : String, Codable, CaseIterable {
+    case Ars = "ARS🇦🇷"
+    case Usd = "USD🇺🇸"
+    case Mxn = "MXN🇲🇽"
+    case Pen = "PEN🇵🇪"
+    case Eur = "EUR🇪🇺"
+    //case Gbp = "GBP🏴󠁧󠁢󠁥󠁮󠁧󠁿"
 }

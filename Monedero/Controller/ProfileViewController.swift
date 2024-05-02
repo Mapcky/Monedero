@@ -14,6 +14,7 @@ class ProfileViewController: UIViewController {
     var name: String?
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.setNavigationBarHidden(false, animated: false)
         if let name = name {
             nameLabel.text = name
         }

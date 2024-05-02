@@ -13,7 +13,7 @@ class NewTrader: UIViewController,UITextFieldDelegate {
     //Variables
     var user : User?
     var myCotizations: [Cotization]?
-    private let enumCountries : [Country] = [.Ars,.Usd,.Mxn,.Pen,.Eur]
+    private let enumCountries = Country.allCases
     
     //Button & Menu Outlets
     private var menuActions = [UIAction]()
@@ -37,6 +37,7 @@ class NewTrader: UIViewController,UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.setNavigationBarHidden(false, animated: false)
         originField.delegate = self
         destinyField.delegate = self
         excButton.isEnabled = false
@@ -73,12 +74,12 @@ class NewTrader: UIViewController,UITextFieldDelegate {
         //Currency de la derecha, cambiara sus atributos segun su uso
         destinyCurrency = Currency(amount: 0, country: .Ars, isActive: true)
         
-        if let convers = myCotizations {
-            for conv in convers {
-                if originCurrency?.country.rawValue == conv.country {
+        if let conversion = myCotizations {
+            for conv in conversion {
+                if originCurrency!.country.rawValue.contains(conv.country!) {
                     leftCountry = conv
                 }
-                if destinyCurrency!.country.rawValue == conv.country {
+                if destinyCurrency!.country.rawValue.contains(conv.country!) {
                     rightCountry = conv
                 }
             }
@@ -111,7 +112,6 @@ class NewTrader: UIViewController,UITextFieldDelegate {
             switch fieldModify.tag {
             case 0:
                 if (Float (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Float (originField.text ?? "0") ?? 0) < 0  || popButton.currentTitle == b2.currentTitle{
-                    //originField.text = String(originCurrency!.amount)
                     excButton.isEnabled = false
                 }
                 else {
@@ -126,7 +126,6 @@ class NewTrader: UIViewController,UITextFieldDelegate {
                 originField.text = String(format: "%.3f",calculo2 / (leftCountry?.value ?? 0))
                 
                 if (Float (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Float (destinyField.text ?? "0") ?? 0) < 0  || popButton.currentTitle == b2.currentTitle{
-                    // destinyField.text = String(destinyCurrency!.amount)
                     excButton.isEnabled = false
                 }
                 else {
@@ -164,10 +163,10 @@ class NewTrader: UIViewController,UITextFieldDelegate {
         }
         if let cotization = myCotizations {
             for conv in cotization {
-                if popButton.currentTitle == conv.country{
+                if popButton.currentTitle!.contains( conv.country!){
                     leftCountry = conv
                 }
-                if b2.currentTitle == conv.country{
+                if b2.currentTitle!.contains(conv.country!) {
                     rightCountry = conv
                 }
             }
@@ -175,58 +174,21 @@ class NewTrader: UIViewController,UITextFieldDelegate {
             originField.text = ""
         }
     }
-    /*
-     //MARK: - storeData
-     //Guardado de los datos en firebase con el balance actualizado
-     func storeData() {
-     let db = Firestore.firestore()
-     if let id = self.wallet!.id, let mail = email {
-     let docRef = db.collection(mail).document(id)
-     do {
-     try docRef.setData(from: wallet)
-     }
-     catch {
-     print(error)
-     }
-     }
-     }
-     */
+    
     
     //MARK: - prepare
+    // "Realiza la transaccion" busca si existe un objeto currency del usuario para
+    // modificar su valor, en caso de no existir se crea un nuevo objeto y se agrega
+    // a su wallet, luego se guardan los cambios en Firestore y se envia a la siguiente vista
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destino = segue.destination as? End, let originAmount = originField.text, let destinyAmount = destinyField.text, let usr = user {
+        if let destino = segue.destination as? End ,let usr = user{
+            let (originAmount,destinyAmount) = doTransaction()
             destino.email = usr.email
-            if let oCurrency = originCurrency {
-                oCurrency.amount -=  (Float(originAmount) ?? 0)
-                destino.resta = originAmount
-                var exists:Bool = false
-                
-                for myWallet in usr.wallet {
-                    if myWallet.country == destinyCurrency!.country {
-                        exists = true
-                        destinyCurrency = myWallet
-                    }
-                }
-                
-                
-                if exists == false {
-                    destinyCurrency!.amount += (Float(destinyAmount) ?? 0)
-                    /*
-                     if dCurrency.isActive == false {
-                     dCurrency.isActive = true
-                     }*/
-                    usr.wallet.append(destinyCurrency!)
-                }
-                else {
-                    destinyCurrency!.amount += (Float(destinyAmount) ?? 0)
-                }
-                destino.suma = destinyAmount
-                
-            }
+            destino.suma = destinyAmount
+            destino.resta = originAmount
             destino.navigationItem.hidesBackButton = true
+            FirebaseManager.shared.setUserData(user: usr)
         }
-        //storeData()
-        FirebaseManager.shared.updateData(user: user!)
     }
     
     
@@ -246,6 +208,42 @@ class NewTrader: UIViewController,UITextFieldDelegate {
         return newText.isEmpty || (Double(newText) != nil)
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // Llamar a resignFirstResponder() en el UITextField para ocultar el teclado
+        view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        // Ocultar el teclado cuando se presiona "return" en el teclado
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func doTransaction() -> (String?,String?) {
+        if let originAmount = originField.text, let destinyAmount = destinyField.text, let usr = user {
+            if let oCurrency = originCurrency {
+                oCurrency.amount -=  (Float(originAmount) ?? 0)
+                var exists:Bool = false
+                
+                for myWallet in usr.wallet {
+                    if myWallet.country == destinyCurrency!.country {
+                        exists = true
+                        destinyCurrency = myWallet
+                    }
+                }
+                
+                if exists == false {
+                    destinyCurrency!.amount += (Float(destinyAmount) ?? 0)
+                    usr.wallet.append(destinyCurrency!)
+                }
+                else {
+                    destinyCurrency!.amount += (Float(destinyAmount) ?? 0)
+                }
+                return (originAmount,destinyAmount)
+            }
+        }
+        return(nil,nil)
+    }
     
 }
 
