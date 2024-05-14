@@ -27,7 +27,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EQA-yG-hWx">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="100"/>
                                 <subviews>
-                                    <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" pointerInteraction="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Slz-ia-tsW">
+                                    <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" pointerInteraction="YES" role="primary" translatesAutoresizingMaskIntoConstraints="NO" id="Slz-ia-tsW">
                                         <rect key="frame" x="228" y="50" width="135" height="35"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="135" id="X1f-l1-IYr"/>
@@ -173,9 +173,11 @@
                     <navigationItem key="navigationItem" id="uYs-Ev-fzX"/>
                     <connections>
                         <outlet property="collectionView" destination="RXn-uh-JHn" id="fft-9I-64M"/>
+                        <outlet property="depositB" destination="k35-0w-hci" id="DaS-4B-8TF"/>
                         <outlet property="loading" destination="L9X-bM-cWp" id="isa-Lr-NoD"/>
                         <outlet property="navigation" destination="uYs-Ev-fzX" id="ile-Yk-iCq"/>
                         <outlet property="profileButton" destination="Slz-ia-tsW" id="cHp-Oz-Q7v"/>
+                        <outlet property="tradeB" destination="vDi-n7-PAA" id="y1a-tB-sDD"/>
                         <segue destination="bjG-M7-46Q" kind="show" identifier="2NewTrader" id="CSj-uA-XdO"/>
                         <segue destination="y3Y-7S-bgI" kind="show" identifier="logOut" id="Fr4-ag-HSr"/>
                         <segue destination="7Sh-uf-3SN" kind="show" identifier="profile" id="f1g-qt-IAp"/>
@@ -735,6 +737,9 @@
                                                 <rect key="frame" x="61" y="0.0" width="312" height="34"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
+                                                <connections>
+                                                    <action selector="editingField:" destination="lTB-32-WUj" eventType="editingChanged" id="ih8-Wc-AkP"/>
+                                                </connections>
                                             </textField>
                                         </subviews>
                                     </stackView>
@@ -762,6 +767,7 @@
                     <navigationItem key="navigationItem" id="PS0-Us-5km"/>
                     <connections>
                         <outlet property="countryButton" destination="WBR-r2-VZa" id="UAt-cC-JOC"/>
+                        <outlet property="depButton" destination="2KA-3f-YrH" id="JBN-Mu-phO"/>
                         <outlet property="inputMoneyField" destination="shX-Dm-mxq" id="BCj-wH-tDR"/>
                         <segue destination="v1t-KP-UUh" kind="show" identifier="endFromDeposit" id="cMM-Dm-oUG"/>
                     </connections>
@@ -773,7 +779,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="Fr4-ag-HSr"/>
-        <segue reference="nOZ-q1-6Pm"/>
+        <segue reference="cMM-Dm-oUG"/>
         <segue reference="Sqx-Zi-whZ"/>
     </inferredMetricsTieBreakers>
     <resources>

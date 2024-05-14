@@ -17,6 +17,8 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     @IBOutlet weak var navigation: UINavigationItem!
     @IBOutlet weak var loading: UIActivityIndicatorView!
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var tradeB: UIButton!
+    @IBOutlet weak var depositB: UIButton!
     
     //Variables para actual funcionamiento
     private var user :User?
@@ -30,11 +32,13 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
         loading.startAnimating()
-        navigationController?.setNavigationBarHidden(true, animated: false)
+        collectionView.showsHorizontalScrollIndicator = false
         collectionView.dataSource = self
         collectionView.delegate = self
         profileButton.isHidden = true
-        
+        profileButton.isUserInteractionEnabled = true
+        tradeB.isHidden = true
+        depositB.isHidden = true
         
         FirebaseManager.shared.getUserData(email: email!) {usr, error in
             // Una vez que los datos se hayan cargado, actualiza la vista
@@ -44,6 +48,9 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
             self.collectionView.reloadData()
             self.profileButton.setTitle("Hola \(self.user?.name ?? "User")", for: .normal)
             self.profileButton.isHidden = false
+            self.tradeB.isHidden = false
+            self.depositB.isHidden = false
+            
         }
         FirebaseManager.shared.getResources{ apiURL, apiKey, error in
             self.getCotizations(apiURL: apiURL!,apiKey: apiKey!){ [weak self] in
@@ -192,6 +199,12 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         performSegue(withIdentifier: "profile", sender: sender)
         
     }    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+
     
 }
 

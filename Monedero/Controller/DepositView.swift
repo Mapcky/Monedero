@@ -7,10 +7,11 @@
 
 import UIKit
 
-class DepositView: UIViewController {
+class DepositView: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var inputMoneyField: UITextField!
     @IBOutlet weak var countryButton: UIButton!
+    @IBOutlet weak var depButton: UIButton!
     
     var user :User?
     private let enumCountries = Country.allCases
@@ -20,7 +21,9 @@ class DepositView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.setNavigationBarHidden(false, animated: false)
         setPopButton()
+        inputMoneyField.delegate = self
 
     }
     
@@ -84,5 +87,18 @@ class DepositView: UIViewController {
         return(nil)
     }
     
+    
+    //MARK: - editingField
+    
+    //Control de los Fields
+    @IBAction func editingField(_ sender: Any) {
+        if (Float (inputMoneyField.text ?? "0") ?? 0) <= 0 {
+            depButton.isEnabled = false
+        }
+        else {
+            depButton.isEnabled = true
+        }
+        
+    }
     
 }

@@ -90,6 +90,7 @@ class NewTrader: UIViewController,UITextFieldDelegate {
     //MARK: - sameCountry
     
     //Comprueba si ambos botones han elegido la misma opcion y se deshabilita el boton Transaccion
+    /*
     func sameCountry() {
         if let b1Title = popButton.currentTitle, let b2Tittle = b2.currentTitle {
             
@@ -101,7 +102,7 @@ class NewTrader: UIViewController,UITextFieldDelegate {
             }
         }
     }
-    
+    */
     
     //MARK: - editingField
     
@@ -111,7 +112,7 @@ class NewTrader: UIViewController,UITextFieldDelegate {
             
             switch fieldModify.tag {
             case 0:
-                if (Float (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Float (originField.text ?? "0") ?? 0) < 0  || popButton.currentTitle == b2.currentTitle{
+                if (Float (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Float (originField.text ?? "0") ?? 0) <= 0  || popButton.currentTitle == b2.currentTitle{
                     excButton.isEnabled = false
                 }
                 else {
@@ -125,7 +126,7 @@ class NewTrader: UIViewController,UITextFieldDelegate {
                 let calculo2 = (Float(destinyField.text!) ?? 0) * (rightCountry?.value ?? 0)
                 originField.text = String(format: "%.3f",calculo2 / (leftCountry?.value ?? 0))
                 
-                if (Float (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Float (destinyField.text ?? "0") ?? 0) < 0  || popButton.currentTitle == b2.currentTitle{
+                if (Float (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Float (destinyField.text ?? "0") ?? 0) <= 0  || popButton.currentTitle == b2.currentTitle{
                     excButton.isEnabled = false
                 }
                 else {
@@ -150,7 +151,7 @@ class NewTrader: UIViewController,UITextFieldDelegate {
     //Se Ejecuta cada vez que se cambia la opcion seleccionada de los menues
     func handleMenuSelection(_ option: String) {
         // Obtiene el título del botón cuando una opcion es seleccionada
-        sameCountry()
+        excButton.isEnabled = false
         for bag in user!.wallet {
             if popButton.currentTitle == bag.country.rawValue {
                 originCurrency = bag

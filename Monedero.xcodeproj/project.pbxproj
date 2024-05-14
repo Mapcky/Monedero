@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		30271F812B9F7C8D002FB1FC /* End.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30271F802B9F7C8C002FB1FC /* End.swift */; };
+		304D24472BF23D300082A880 /* TextFieldDelegateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304D24462BF23D300082A880 /* TextFieldDelegateHandler.swift */; };
 		306C38F42BBF1948005A5613 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306C38F32BBF1948005A5613 /* User.swift */; };
 		3072A44A2BC5E7FE00A14617 /* Cotization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3072A4492BC5E7FE00A14617 /* Cotization.swift */; };
 		3072A44C2BC5ED5200A14617 /* ConversionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3072A44B2BC5ED5200A14617 /* ConversionResult.swift */; };
@@ -34,6 +35,7 @@
 
 /* Begin PBXFileReference section */
 		30271F802B9F7C8C002FB1FC /* End.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = End.swift; sourceTree = "<group>"; };
+		304D24462BF23D300082A880 /* TextFieldDelegateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldDelegateHandler.swift; sourceTree = "<group>"; };
 		306C38F32BBF1948005A5613 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		3072A4492BC5E7FE00A14617 /* Cotization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cotization.swift; sourceTree = "<group>"; };
 		3072A44B2BC5ED5200A14617 /* ConversionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionResult.swift; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 				30B4C0C52BC5774500411E82 /* FirebaseManager.swift */,
 				3072A4492BC5E7FE00A14617 /* Cotization.swift */,
 				3072A44B2BC5ED5200A14617 /* ConversionResult.swift */,
+				304D24462BF23D300082A880 /* TextFieldDelegateHandler.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -238,6 +241,7 @@
 				30271F812B9F7C8D002FB1FC /* End.swift in Sources */,
 				30E0EA1C2BE40CD50070B1E4 /* DepositView.swift in Sources */,
 				30D49DE62BBD82B600FA40C3 /* NewTrader.swift in Sources */,
+				304D24472BF23D300082A880 /* TextFieldDelegateHandler.swift in Sources */,
 				3072A44C2BC5ED5200A14617 /* ConversionResult.swift in Sources */,
 				309F727B2BB4B17200B87F63 /* LoginViewController.swift in Sources */,
 				30D49DE82BBD831900FA40C3 /* Currency.swift in Sources */,
@@ -401,6 +405,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -429,6 +434,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
