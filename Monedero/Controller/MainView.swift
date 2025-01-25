@@ -20,11 +20,9 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     @IBOutlet weak var tradeB: UIButton!
     @IBOutlet weak var depositB: UIButton!
     
-    //Variables para actual funcionamiento
+    //Variables
     private var user :User?
     var email: String?
-    private var apiURL :String?
-    private var apiKey :String?
     private var usdConversions : ConversionResult?
     private var myCotizations : [Cotization] = []
     private let enumCountries = Country.allCases
@@ -40,25 +38,42 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         tradeB.isHidden = true
         depositB.isHidden = true
         
-        FirebaseManager.shared.getUserData(email: email!) {usr, error in
-            // Una vez que los datos se hayan cargado, actualiza la vista
-            self.user = usr
-            self.loading.stopAnimating()
-            self.loading.isHidden = true
-            self.collectionView.reloadData()
-            self.profileButton.setTitle("Hola \(self.user?.name ?? "User")", for: .normal)
-            self.profileButton.isHidden = false
-            self.tradeB.isHidden = false
-            self.depositB.isHidden = false
-            
-        }
-        FirebaseManager.shared.getResources{ apiURL, apiKey, error in
-            self.getCotizations(apiURL: apiURL!,apiKey: apiKey!){ [weak self] in
-                self?.money()
+        if let email = email {
+            FirebaseManager.shared.getUserData(email: email) {usr, error in
+                if let error = error {
+                    print("Error fetching resources: \(error)")
+                    return
+                }
+                // Una vez que los datos se hayan cargado, actualiza la vista
+                if let user = usr {
+                    self.user = usr
+                    self.loading.stopAnimating()
+                    self.loading.isHidden = true
+                    self.collectionView.reloadData()
+                    self.profileButton.setTitle("Hola \(user.name)", for: .normal)
+                    self.profileButton.isHidden = false
+                    self.tradeB.isHidden = false
+                    self.depositB.isHidden = false
+                }
             }
         }
-
-        
+        FirebaseManager.shared.getResources{ apiURL, apiKey, error in
+            if let error = error {
+                print("Error fetching resources: \(error)")
+                return
+            }
+            // Deshabilitar los botones antes de iniciar la tarea
+            self.tradeB.isEnabled = false
+            self.depositB.isEnabled = false
+            // Desempaquetado de apiURL y apiKey
+            if let apiURL = apiURL, let apiKey = apiKey {
+                self.getCotizations(apiURL: apiURL, apiKey: apiKey) { [weak self] in
+                    self?.makeCotziationsArray(apiURL: apiURL, apiKey: apiKey)
+                }
+            } else {
+                print("Error: apiURL or apiKey is nil")
+            }
+        }
     }
 
     @IBAction func depositAction(_ sender: Any) {
@@ -95,14 +110,12 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     }
     
     // MARK: - UICollectionViewDataSource
-    
     //Creacion de numero de tarjetas, segun cuantos items pertenezcan a el array de Currency
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
         var count = 0
-        if let w8 = user {
-            for wall in w8.wallet {
-                if wall.isActive == true {
+        if let user = user {
+            for wallet in user.wallet {
+                if wallet.isActive == true {
                     count += 1
                 }
             }
@@ -113,15 +126,12 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     //MARK: - collectionView
     //Creacion de cada Cell del CollectionView, se da formato a labels y forma de la cell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         // Filtrar los elementos del arreglo currency donde isActive es true
         let activeCurrencies = user?.wallet.filter { $0.isActive == true }
-        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CustomCell", for: indexPath) as! MyCollectionViewCell
         cell.countryLabel.text = activeCurrencies?[indexPath.row].country.rawValue
         cell.moneyLabel.text = "$ \(String(format: "%.2f",activeCurrencies?[indexPath.row].amount ?? 0))"
         cell.moneyLabel.textColor = .white
-        cell.backgroundColor = .lightGray
         cell.layer.cornerRadius = 30
         return cell
     }
@@ -150,7 +160,6 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
             print("URL inválida")
             return
         }
-
         // Crear una tarea de URLSession para obtener los datos JSON
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             // Manejar cualquier error
@@ -158,16 +167,19 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
                 print("Error al obtener datos:", error)
                 return
             }
-            
             // Verificar si los datos existen
             guard let jsonData = data else {
                 print("Datos no encontrados")
                 return
             }
-            
             do {
                 // Decodificar los datos JSON en la estructura definida
                 self.usdConversions = try JSONDecoder().decode(ConversionResult.self, from: jsonData)
+                
+                DispatchQueue.main.async {
+                    self.tradeB.isEnabled = true
+                    self.depositB.isEnabled = true
+                }
                 
                 // Llamar a la clausura de finalización después de que se hayan procesado los datos
                 completion()
@@ -175,23 +187,24 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
                 print("Error al decodificar el JSON:", error)
             }
         }
-
         task.resume()
     }
     
     //MARK: - money
    //Obtiene las cotizaciones necesarias segun los elementos existentes en el enum Country
-    func money() {
+    func makeCotziationsArray(apiURL:String , apiKey:String) {
         if let conv = usdConversions?.result.conversion{
             for con in conv {
                 if enumCountries.contains(where: { whale in
-                    return whale.rawValue.contains(con.to)
+                    //Caso particular, buscar otra solucion
+                    return whale.rawValue.contains(con.to) && con.to != "AR"
                 }) {
                     myCotizations.append(Cotization(value: Float(1 / con.rate), country: con.to))
+                    print(myCotizations.last!.country)
                 }
             }
         }
-        myCotizations.append(Cotization(value: 1, country: "USD"))
+//        myCotizations.append(Cotization(value: 1, country: "USD"))
     }
     
     //Accion ir a perfil usuario
@@ -200,6 +213,7 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         
     }    
     
+    //Se oculta la navigationBar durante le proceso de viewWillAppear para que no tenga probelmas con el boton perfil
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)

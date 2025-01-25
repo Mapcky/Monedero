@@ -10,7 +10,7 @@ import UIKit
 import FirebaseAuth
 
 
-class RegisterViewController: UIViewController, UITextFieldDelegate {
+class RegisterViewController: ProtocolsViewController {
     
     
     //TextFields Outlets
@@ -22,12 +22,11 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
     
     
     //Variables
-    var user :User?
-    var wallet : [Currency] = []
+    private var user :User?
     var selectedCountry : Country?
     var selectedCurrency : Currency?
     private var menuActions = [UIAction]()
-    let enumCountries = Country.allCases
+    private let enumCountries = Country.allCases
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,8 +50,8 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
                 if error == nil {
                     
                     self.selectedCurrency = Currency(amount: (Float (money) ?? 0.0), country: sCountry, isActive: true)
-                    self.wallet.append(self.selectedCurrency!)
-                    self.user = User(email: email, name: name, wallet: self.wallet)
+                    let wallet : [Currency] = [self.selectedCurrency!]
+                    self.user = User(email: email, name: name, wallet: wallet)
                     
                     FirebaseManager.shared.setUserData(user: self.user!)
                     self.performSegue(withIdentifier: "2Main", sender: sender)
@@ -116,15 +115,13 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
     }
      */
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        // Llamar a resignFirstResponder() en el UITextField para ocultar el teclado
-        view.endEditing(true)
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        // Ocultar el teclado cuando se presiona "return" en el teclado
-        textField.resignFirstResponder()
+    override func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Solo el moneyInput necesita la validación numérica
+        if textField == moneyInput {
+            return validateNumericInput(textField: textField, replacementString: string)
+        }
         return true
     }
+    
 }
 

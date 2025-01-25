@@ -7,11 +7,11 @@
 
 import UIKit
 
-class DepositView: UIViewController, UITextFieldDelegate {
+class DepositView: ProtocolsViewController {
     
     @IBOutlet weak var inputMoneyField: UITextField!
     @IBOutlet weak var countryButton: UIButton!
-    @IBOutlet weak var depButton: UIButton!
+    @IBOutlet weak var depositButton: UIButton!
     
     var user :User?
     private let enumCountries = Country.allCases
@@ -93,10 +93,10 @@ class DepositView: UIViewController, UITextFieldDelegate {
     //Control de los Fields
     @IBAction func editingField(_ sender: Any) {
         if (Float (inputMoneyField.text ?? "0") ?? 0) <= 0 {
-            depButton.isEnabled = false
+            depositButton.isEnabled = false
         }
         else {
-            depButton.isEnabled = true
+            depositButton.isEnabled = true
         }
         
     }

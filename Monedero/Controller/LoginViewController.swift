@@ -9,7 +9,7 @@ import UIKit
 import FirebaseAuth
 import Firebase
 
-class LoginViewController: UIViewController, UITextFieldDelegate {
+class LoginViewController: ProtocolsViewController {
 
     //TextFields Outlets
     @IBOutlet weak var emailField: UITextField!
@@ -76,14 +76,17 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        // Llamar a resignFirstResponder() en el UITextField para ocultar el teclado
-        view.endEditing(true)
-    }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        // Ocultar el teclado cuando se presiona "return" en el teclado
-        textField.resignFirstResponder()
+    // Anular la función textField(_:shouldChangeCharactersIn:replacementString:)
+    override func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Devolver true para permitir cambios de texto
         return true
     }
+
+    // Definir validateNumericInput como nil para evitar su uso
+    override func validateNumericInput(textField: UITextField, replacementString string: String) -> Bool {
+        // Siempre devolver true para permitir cualquier entrada
+        return true
+    }
+    
 }

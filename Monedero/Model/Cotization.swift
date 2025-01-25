@@ -10,8 +10,8 @@ import Foundation
 
 class Cotization {
     
-    var value: Float?
-    var country : String?
+    var value: Float
+    var country : String
     
     
     init(value: Float, country: String) {
