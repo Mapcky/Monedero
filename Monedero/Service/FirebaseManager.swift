@@ -12,7 +12,7 @@ import FirebaseFirestoreSwift
 
 class FirebaseManager {
     
-    static let shared = FirebaseManager()
+    //static let shared = FirebaseManager()
     
     func setUserData(user: User) {
         let db = Firestore.firestore()

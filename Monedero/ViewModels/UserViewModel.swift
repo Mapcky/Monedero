@@ -72,7 +72,9 @@ class UserViewModel: ObservableObject {
                 strongSelf.onError?(errorMessage) // Pass error to the ViewController
                 return
             }
-            strongSelf.dataRetrieved.notify(with: ())
+            DispatchQueue.main.async {
+                strongSelf.dataRetrieved.notify(with: ())
+            }
         }
     }
     
@@ -100,13 +102,50 @@ class UserViewModel: ObservableObject {
                 self.onError?(errorMessage)
                 return
             }
-            
-            self.user = User(email: email, name: name, wallet: [wallet])
-            FirebaseManager.shared.setUserData(user: self.user!)
-            self.dataRetrieved.notify(with: ())
+            DispatchQueue.main.async {
+                let userRef = self.db.collection("Users").document(email)
+                self.user = User(email: email, name: name, wallet: [wallet])
+                do {
+                    try userRef.setData(from: self.user)
+                    self.dataRetrieved.notify(with: ())
+                } catch let error {
+                    print("Error adding user: \(error)")
+                }
+            }
         }
     }
     
-    
-    
+    // MARK: - DOTRANSACTION
+    func doTransaction(originAmount: String, destinyAmount: String, selectedOriginCurrency: Currency, selectedDestinyCurrency: Currency) {
+        guard let user = self.user else { return  }
+        guard let originCurrency = activeCurrencies.first(where: { $0.country == selectedOriginCurrency.country }) else { return  }
+        
+        // Reducir el monto en la moneda de origen
+        originCurrency.amount -= (Double(originAmount) ?? 0)
+        
+        // Verificar si la moneda de destino ya existe en el wallet
+        var destinyCurrency = activeCurrencies.first(where: { $0.country == selectedDestinyCurrency.country })
+        
+        if destinyCurrency == nil {
+            destinyCurrency = Currency(amount: 0, country: selectedDestinyCurrency.country, isActive: true)
+            user.wallet.append(destinyCurrency!)
+        }
+        
+        
+        // Aumentar el monto en la moneda de destino
+        destinyCurrency?.amount += (Double(destinyAmount) ?? 0)
+        DispatchQueue.main.async {
+            let userRef = self.db.collection("Users").document(user.email)
+            do {
+                
+                try userRef.setData(from: user)
+                self.dataRetrieved.notify(with: ())
+                
+            } catch let error {
+                print("Error adding user: \(error)")
+            }
+        }
+    }
+
+
 }

@@ -42,6 +42,11 @@ class NewTrader: ProtocolsViewController {
         destinyField.delegate = self
         exchangeButton.isEnabled = false
         setUpCountryButtons()
+        
+        userViewModel?.dataRetrieved.bind(to: self) { [weak self] _ in
+            guard let self = self else { return }
+            self.performSegue(withIdentifier: "End", sender: nil)
+        }
     }
     
     //MARK: - SetPopButtons
@@ -123,7 +128,9 @@ class NewTrader: ProtocolsViewController {
     
     
     @IBAction func exchangeAction(_ sender: Any) {
-        performSegue(withIdentifier: "End", sender: sender)
+        guard let oAmount = originField.text, let dAmount = destinyField.text, let oCurrency = originCurrency, let dCurrency = destinyCurrency else { return }
+        userViewModel?.doTransaction(originAmount: oAmount, destinyAmount: dAmount, selectedOriginCurrency: oCurrency, selectedDestinyCurrency: dCurrency)
+        exchangeButton.isEnabled = false
     }
     
     
@@ -159,46 +166,16 @@ class NewTrader: ProtocolsViewController {
     
     
     //MARK: - prepare
-    // "Realiza la transaccion" busca si existe un objeto currency del usuario para
-    // modificar su valor, en caso de no existir se crea un nuevo objeto y se agrega
-    // a su wallet, luego se guardan los cambios en Firestore y se envia a la siguiente vista
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destino = segue.destination as? End ,let usr = userViewModel{
-            let (originAmount,destinyAmount) = doTransaction()
-            destino.email = usr.user!.email
-            destino.suma = destinyAmount
-            destino.resta = originAmount
+        if let destino = segue.destination as? End , let usr = userViewModel {
+            guard let dAmount = destinyField.text, let oAmount = originField.text else { return }
             destino.navigationItem.hidesBackButton = true
-            FirebaseManager.shared.setUserData(user: usr.user!)
+            destino.email = usr.user!.email
+            destino.suma = dAmount
+            destino.resta = oAmount
         }
     }
     
-    func doTransaction() -> (String?,String?) {
-        guard let user = userViewModel?.user! else { return (nil,nil)  }
-        if let originAmount = originField.text, let destinyAmount = destinyField.text {
-            if let oCurrency = originCurrency {
-                oCurrency.amount -=  (Double(originAmount) ?? 0)
-                var exists:Bool = false
-                
-                for myWallet in user.wallet {
-                    if myWallet.country == destinyCurrency!.country {
-                        exists = true
-                        destinyCurrency = myWallet
-                    }
-                }
-                
-                if exists == false {
-                    destinyCurrency!.amount += (Double(destinyAmount) ?? 0)
-                    user.wallet.append(destinyCurrency!)
-                }
-                else {
-                    destinyCurrency!.amount += (Double(destinyAmount) ?? 0)
-                }
-                return (originAmount,destinyAmount)
-            }
-        }
-        return(nil,nil)
-    }
     
 }
 

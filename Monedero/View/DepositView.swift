@@ -60,7 +60,7 @@ class DepositView: ProtocolsViewController {
             destino.suma = inputMoney
             destino.resta = ""
             destino.navigationItem.hidesBackButton = true
-            FirebaseManager.shared.setUserData(user: usr)
+            //FirebaseManager.shared.setUserData(user: usr)
         }
     }
     

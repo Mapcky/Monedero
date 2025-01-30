@@ -12,7 +12,7 @@ struct UsdConversions: Decodable {
     
     struct usd :Decodable {
         var ars : Double
-        var usd : Double = 1
+        var usd : Double
         var mxn : Double
         var pen : Double
         var eur : Double

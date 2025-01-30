@@ -777,9 +777,10 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
+        <segue reference="w27-Tv-XE4"/>
         <segue reference="Fr4-ag-HSr"/>
         <segue reference="cMM-Dm-oUG"/>
-        <segue reference="Sqx-Zi-whZ"/>
+        <segue reference="3Sv-Xa-XBD"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="Logo" width="294" height="330"/>

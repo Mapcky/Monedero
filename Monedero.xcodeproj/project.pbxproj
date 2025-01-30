@@ -11,7 +11,6 @@
 		304D24472BF23D300082A880 /* TextFieldDelegateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304D24462BF23D300082A880 /* TextFieldDelegateHandler.swift */; };
 		306C38F42BBF1948005A5613 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306C38F32BBF1948005A5613 /* User.swift */; };
 		3072A44A2BC5E7FE00A14617 /* Cotization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3072A4492BC5E7FE00A14617 /* Cotization.swift */; };
-		3072A44C2BC5ED5200A14617 /* ConversionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3072A44B2BC5ED5200A14617 /* ConversionResult.swift */; };
 		30827AD32D4B97C3002B5535 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30827AD22D4B97C3002B5535 /* Observable.swift */; };
 		309796952C136EB00066CCE4 /* ProtocolsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309796942C136EB00066CCE4 /* ProtocolsViewController.swift */; };
 		309F72792BB4B14900B87F63 /* MyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309F72782BB4B14900B87F63 /* MyCollectionViewCell.swift */; };
@@ -39,7 +38,6 @@
 		304D24462BF23D300082A880 /* TextFieldDelegateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldDelegateHandler.swift; sourceTree = "<group>"; };
 		306C38F32BBF1948005A5613 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		3072A4492BC5E7FE00A14617 /* Cotization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cotization.swift; sourceTree = "<group>"; };
-		3072A44B2BC5ED5200A14617 /* ConversionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionResult.swift; sourceTree = "<group>"; };
 		30827AD22D4B97C3002B5535 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		309796942C136EB00066CCE4 /* ProtocolsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolsViewController.swift; sourceTree = "<group>"; };
 		309F72782BB4B14900B87F63 /* MyCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -111,7 +109,6 @@
 				30D49DE72BBD831900FA40C3 /* Currency.swift */,
 				306C38F32BBF1948005A5613 /* User.swift */,
 				3072A4492BC5E7FE00A14617 /* Cotization.swift */,
-				3072A44B2BC5ED5200A14617 /* ConversionResult.swift */,
 				304D24462BF23D300082A880 /* TextFieldDelegateHandler.swift */,
 				309796942C136EB00066CCE4 /* ProtocolsViewController.swift */,
 				30C945EB2D4ADF9300E91022 /* UsdConversions.swift */,
@@ -251,7 +248,6 @@
 				30D49DE62BBD82B600FA40C3 /* NewTrader.swift in Sources */,
 				304D24472BF23D300082A880 /* TextFieldDelegateHandler.swift in Sources */,
 				30827AD32D4B97C3002B5535 /* Observable.swift in Sources */,
-				3072A44C2BC5ED5200A14617 /* ConversionResult.swift in Sources */,
 				309F727B2BB4B17200B87F63 /* LoginViewController.swift in Sources */,
 				30D49DE82BBD831900FA40C3 /* Currency.swift in Sources */,
 				309796952C136EB00066CCE4 /* ProtocolsViewController.swift in Sources */,
