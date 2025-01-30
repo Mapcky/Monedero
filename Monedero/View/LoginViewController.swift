@@ -26,9 +26,16 @@ class LoginViewController: ProtocolsViewController {
         emailField.delegate = self
         passField.delegate = self
         
+        //Manejo de Errores
         viewModel.onError = { [weak self] errorMessage in
             guard let self = self else { return }
             self.showAlert(title: "Error", message: errorMessage)
+        }
+        
+        //Login Confirmado, perform segue
+        viewModel.dataRetrieved.bind(to: self) { [weak self] _ in
+            guard let self = self else { return }
+            self.performSegue(withIdentifier: "Main", sender: nil)
         }
     }
     
@@ -41,13 +48,9 @@ class LoginViewController: ProtocolsViewController {
     
     
     //MARK: - Login
-    //Login, una vez verificados los datos de login mediante FirebaseAuth, procede a la pantalla Main
     @IBAction func logBA(_ sender: UIButton) {
         guard let email = emailField.text, let pass = passField.text else { return }
         viewModel.login(email: email, password: pass)
-        viewModel.dataRetrieved.bind(to: self) {
-            self.performSegue(withIdentifier: "Main", sender: sender)
-        }
     }
     
     
@@ -55,7 +58,6 @@ class LoginViewController: ProtocolsViewController {
     //MARK: - prepare
     //Prepare envia el email del login a mainView para que este peuda recuprar los datos de dicho usuario luego
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
         if let destino = segue.destination as? MainView{
             destino.email = emailField.text
             destino.navigationItem.hidesBackButton = true
@@ -68,5 +70,4 @@ class LoginViewController: ProtocolsViewController {
         // Devolver true para permitir cambios de texto
         return true
     }
-    
 }

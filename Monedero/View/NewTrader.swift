@@ -48,12 +48,10 @@ class NewTrader: ProtocolsViewController {
     
     //Armado de las menu actions de los botones
     func setUpCountryButtons() {
-        guard let wallet = userViewModel?.user?.wallet else { return }
+        guard let wallet = userViewModel?.activeCurrencies else { return }
         for selector in wallet {
-            if selector.isActive == true {
-                let actionB1 = UIAction(title : selector.country.rawValue, handler: { action in self.handleMenuSelection(selector.country.rawValue)})
-                menuActionsButtonLeft.append(actionB1)
-            }
+            let actionB1 = UIAction(title : selector.country.rawValue, handler: { action in self.handleMenuSelection(selector.country.rawValue)})
+            menuActionsButtonLeft.append(actionB1)
         }
         
         for selector in enumCountries {
@@ -67,20 +65,19 @@ class NewTrader: ProtocolsViewController {
         countryLeftButton.menu = menub1
         countryRightButton.menu = menub2
         
-        
         originCurrency = wallet.first
         
         
         //Currency de la derecha, cambiara sus atributos segun su uso
         destinyCurrency = Currency(amount: 0, country: .Ars, isActive: true)
         
-        if let conversion = myCotizations {
-            for conv in conversion {
-                if originCurrency!.country.rawValue == conv.country.rawValue {
-                    leftCountry = conv
+        if let conversions = myCotizations {
+            for conversion in conversions {
+                if originCurrency!.country.rawValue == conversion.country.rawValue {
+                    leftCountry = conversion
                 }
-                if destinyCurrency!.country.rawValue == conv.country.rawValue {
-                    rightCountry = conv
+                if destinyCurrency!.country.rawValue == conversion.country.rawValue {
+                    rightCountry = conversion
                 }
             }
         }
@@ -134,7 +131,7 @@ class NewTrader: ProtocolsViewController {
     //Se Ejecuta cada vez que se cambia la opcion seleccionada de los menues
     func handleMenuSelection(_ option: String) {
         // Obtiene el título del botón cuando una opcion es seleccionada
-        guard let wallet = userViewModel?.user?.wallet else { return }
+        guard let wallet = userViewModel?.activeCurrencies else { return }
         exchangeButton.isEnabled = false
         for aCurrency in wallet {
             if countryLeftButton.currentTitle == aCurrency.country.rawValue {

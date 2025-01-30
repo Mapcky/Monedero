@@ -16,18 +16,17 @@ class UserViewModel: ObservableObject {
     
     var user: User?
     var dataRetrieved = Observable<Void>()
-    var onLoginSuccess: (() -> Void)?
     
     var onUserUpdated: ((User?) -> Void)?
     var onError: ((String) -> Void)?
-
+    
     
     var activeCurrencies: [Currency] {
         return user?.wallet.filter { $0.isActive == true } ?? []
     }
     
+    // MARK: - GetData
     func getUserData(email: String) {
-        
         // Obtener el documento especificado por el correo electrónico
         db.collection("Users").document(email)
             .getDocument { [weak self] (documentSnapshot, error) in
@@ -38,10 +37,10 @@ class UserViewModel: ObservableObject {
                     return
                 }
                 
-                 guard let document = documentSnapshot, document.exists else {
-                       self.onError?("No existe el usuario con este correo.")
-                       return
-                   }
+                guard let document = documentSnapshot, document.exists else {
+                    self.onError?("No existe el usuario con este correo.")
+                    return
+                }
                 DispatchQueue.main.async {
                     do {
                         self.user = try document.data(as: User.self)
@@ -51,10 +50,10 @@ class UserViewModel: ObservableObject {
                         self.onError?("Error al decodificar datos del usuario.")
                     }
                 }
-        }
+            }
     }
     
-    
+    // MARK: - LOGIN
     func login(email: String, password: String) {
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] (result, error) in
             guard let strongSelf = self else { return }
@@ -75,20 +74,39 @@ class UserViewModel: ObservableObject {
             }
             strongSelf.dataRetrieved.notify(with: ())
         }
-        
     }
     
-    /*
-    func setUserData() {
-        guard let user = user else { return }
-        let userRef = db.collection("Users").document(user.email)
-
-        do {
-            try userRef.setData(from: user)
-        } catch let error {
-            print("Error adding user: \(error)")
+    // MARK: - REGISTER
+    func register(email: String, password: String, name: String, wallet: Currency) {
+        Auth.auth().createUser(withEmail: email, password: password) {
+            (result, error) in
+            
+            // Manejo de errores
+            if let authError = error as NSError? {
+                var errorMessage = "Hubo un error desconocido. Por favor, intenta de nuevo."
+                switch authError.code {
+                case AuthErrorCode.invalidEmail.rawValue:
+                    errorMessage = "El correo electrónico proporcionado es inválido."
+                case AuthErrorCode.emailAlreadyInUse.rawValue:
+                    errorMessage = "Este correo electrónico ya está registrado. Intenta con otro."
+                case AuthErrorCode.weakPassword.rawValue:
+                    errorMessage = "La contraseña es demasiado débil. Usa al menos 6 caracteres."
+                default:
+                    errorMessage = authError.localizedDescription
+                }
+                
+                
+                // Llamamos a la función de error del ViewModel para que notifique al controlador
+                self.onError?(errorMessage)
+                return
+            }
+            
+            self.user = User(email: email, name: name, wallet: [wallet])
+            FirebaseManager.shared.setUserData(user: self.user!)
+            self.dataRetrieved.notify(with: ())
         }
     }
-    */
+    
+    
     
 }
