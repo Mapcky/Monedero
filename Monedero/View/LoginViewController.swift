@@ -6,8 +6,6 @@
 //
 
 import UIKit
-import FirebaseAuth
-import Firebase
 
 class LoginViewController: ProtocolsViewController {
 
@@ -19,10 +17,19 @@ class LoginViewController: ProtocolsViewController {
     @IBOutlet weak var regButton: UIButton!
     @IBOutlet weak var logButton: UIButton!
     
+    // MARK: - PROPERTIES
+    
+    private var viewModel = UserViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         emailField.delegate = self
         passField.delegate = self
+        
+        viewModel.onError = { [weak self] errorMessage in
+            guard let self = self else { return }
+            self.showAlert(title: "Error", message: errorMessage)
+        }
     }
     
     //MARK: - Register
@@ -36,35 +43,14 @@ class LoginViewController: ProtocolsViewController {
     //MARK: - Login
     //Login, una vez verificados los datos de login mediante FirebaseAuth, procede a la pantalla Main
     @IBAction func logBA(_ sender: UIButton) {
-        if let email = emailField.text, let pass = passField.text {
-            Auth.auth().signIn(withEmail: email, password: pass) { [weak self] (result, error) in
-                guard let strongSelf = self else { return }
-                if let error = error as NSError? {
-                    // Manejar el error de inicio de sesión
-                    switch error.code {
-                    case AuthErrorCode.invalidEmail.rawValue:
-                        strongSelf.showAlert(title: "Error", message: "Correo electrónico inválido")
-                    case AuthErrorCode.userNotFound.rawValue:
-                        strongSelf.showAlert(title: "Error", message: "Usuario no encontrado")
-                    case AuthErrorCode.wrongPassword.rawValue:
-                        strongSelf.showAlert(title: "Error", message: "Contraseña incorrecta")
-                    default:
-                        strongSelf.showAlert(title: "Error", message: error.localizedDescription)
-                    }
-                    return
-                }
-                // Inicio de sesión exitoso, continuar con la navegación
-                strongSelf.performSegue(withIdentifier: "Main", sender: sender)
-            }
+        guard let email = emailField.text, let pass = passField.text else { return }
+        viewModel.login(email: email, password: pass)
+        viewModel.dataRetrieved.bind(to: self) {
+            self.performSegue(withIdentifier: "Main", sender: sender)
         }
     }
     
-    // Función para mostrar una alerta
-    func showAlert(title: String, message: String) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        present(alertController, animated: true, completion: nil)
-    }
+    
     
     //MARK: - prepare
     //Prepare envia el email del login a mainView para que este peuda recuprar los datos de dicho usuario luego
@@ -80,12 +66,6 @@ class LoginViewController: ProtocolsViewController {
     // Anular la función textField(_:shouldChangeCharactersIn:replacementString:)
     override func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // Devolver true para permitir cambios de texto
-        return true
-    }
-
-    // Definir validateNumericInput como nil para evitar su uso
-    override func validateNumericInput(textField: UITextField, replacementString string: String) -> Bool {
-        // Siempre devolver true para permitir cualquier entrada
         return true
     }
     

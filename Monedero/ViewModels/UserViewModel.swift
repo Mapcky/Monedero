@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
+import FirebaseAuth
 
 class UserViewModel: ObservableObject {
     
@@ -15,10 +16,15 @@ class UserViewModel: ObservableObject {
     
     var user: User?
     var dataRetrieved = Observable<Void>()
+    var onLoginSuccess: (() -> Void)?
     
     var onUserUpdated: ((User?) -> Void)?
     var onError: ((String) -> Void)?
 
+    
+    var activeCurrencies: [Currency] {
+        return user?.wallet.filter { $0.isActive == true } ?? []
+    }
     
     func getUserData(email: String) {
         
@@ -47,6 +53,31 @@ class UserViewModel: ObservableObject {
                 }
         }
     }
+    
+    
+    func login(email: String, password: String) {
+        Auth.auth().signIn(withEmail: email, password: password) { [weak self] (result, error) in
+            guard let strongSelf = self else { return }
+            if let error = error as NSError? {
+                let errorMessage: String
+                switch error.code {
+                case AuthErrorCode.invalidEmail.rawValue:
+                    errorMessage = "Correo electrónico inválido"
+                case AuthErrorCode.userNotFound.rawValue:
+                    errorMessage = "Usuario no encontrado"
+                case AuthErrorCode.wrongPassword.rawValue:
+                    errorMessage = "Contraseña incorrecta"
+                default:
+                    errorMessage = error.localizedDescription
+                }
+                strongSelf.onError?(errorMessage) // Pass error to the ViewController
+                return
+            }
+            strongSelf.dataRetrieved.notify(with: ())
+        }
+        
+    }
+    
     /*
     func setUserData() {
         guard let user = user else { return }

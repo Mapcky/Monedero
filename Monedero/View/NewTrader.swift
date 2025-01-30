@@ -11,7 +11,7 @@ import UIKit
 class NewTrader: ProtocolsViewController {
     
     //Variables
-    var user : User?
+    var userViewModel : UserViewModel?
     var myCotizations: [Cotization]?
     private let enumCountries = Country.allCases
     
@@ -41,34 +41,34 @@ class NewTrader: ProtocolsViewController {
         originField.delegate = self
         destinyField.delegate = self
         exchangeButton.isEnabled = false
-        setPopButton()
+        setUpCountryButtons()
     }
     
     //MARK: - SetPopButtons
     
     //Armado de las menu actions de los botones
-    func setPopButton() {
-        
-        for selector in user!.wallet{
+    func setUpCountryButtons() {
+        guard let wallet = userViewModel?.user?.wallet else { return }
+        for selector in wallet {
             if selector.isActive == true {
-                let action = UIAction(title : selector.country.rawValue, handler: {action in self.handleMenuSelection(selector.country.rawValue)})
-                menuActionsButtonLeft.append(action)
+                let actionB1 = UIAction(title : selector.country.rawValue, handler: { action in self.handleMenuSelection(selector.country.rawValue)})
+                menuActionsButtonLeft.append(actionB1)
             }
         }
         
-        for selector in enumCountries{
+        for selector in enumCountries {
             let actionB2 = UIAction(title : selector.rawValue, handler: {action in self.handleMenuSelection(selector.rawValue) })
             menuActionsButtonRight.append(actionB2)
         }
         
         
-        let menu = UIMenu(children: menuActionsButtonLeft)
+        let menub1 = UIMenu(children: menuActionsButtonLeft)
         let menub2 = UIMenu(children: menuActionsButtonRight)
-        countryLeftButton.menu = menu
+        countryLeftButton.menu = menub1
         countryRightButton.menu = menub2
         
         
-        originCurrency = user?.wallet.first
+        originCurrency = wallet.first
         
         
         //Currency de la derecha, cambiara sus atributos segun su uso
@@ -106,8 +106,7 @@ class NewTrader: ProtocolsViewController {
                 }
                 let calculo = (Double(originField.text!) ?? 0) * (leftCountry?.value ?? 0)
                 destinyField.text = String(format: "%.3f",calculo / (rightCountry?.value ?? 0))
-                break
-                
+                                
             case 1:
                 let calculo2 = (Double(destinyField.text!) ?? 0) * (rightCountry?.value ?? 0)
                 originField.text = String(format: "%.3f",calculo2 / (leftCountry?.value ?? 0))
@@ -118,8 +117,6 @@ class NewTrader: ProtocolsViewController {
                 else {
                     exchangeButton.isEnabled = true
                 }
-                
-                break
             default:
                 break
             }
@@ -137,10 +134,11 @@ class NewTrader: ProtocolsViewController {
     //Se Ejecuta cada vez que se cambia la opcion seleccionada de los menues
     func handleMenuSelection(_ option: String) {
         // Obtiene el título del botón cuando una opcion es seleccionada
+        guard let wallet = userViewModel?.user?.wallet else { return }
         exchangeButton.isEnabled = false
-        for bag in user!.wallet {
-            if countryLeftButton.currentTitle == bag.country.rawValue {
-                originCurrency = bag
+        for aCurrency in wallet {
+            if countryLeftButton.currentTitle == aCurrency.country.rawValue {
+                originCurrency = aCurrency
             }
         }
         for enums in enumCountries {
@@ -150,10 +148,10 @@ class NewTrader: ProtocolsViewController {
         }
         if let cotization = myCotizations {
             for conv in cotization {
-                if countryLeftButton.currentTitle!.contains( conv.country.rawValue){
+                if countryLeftButton.currentTitle! == conv.country.rawValue {
                     leftCountry = conv
                 }
-                if countryRightButton.currentTitle!.contains(conv.country.rawValue) {
+                if countryRightButton.currentTitle! == conv.country.rawValue {
                     rightCountry = conv
                 }
             }
@@ -168,23 +166,24 @@ class NewTrader: ProtocolsViewController {
     // modificar su valor, en caso de no existir se crea un nuevo objeto y se agrega
     // a su wallet, luego se guardan los cambios en Firestore y se envia a la siguiente vista
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destino = segue.destination as? End ,let usr = user{
+        if let destino = segue.destination as? End ,let usr = userViewModel{
             let (originAmount,destinyAmount) = doTransaction()
-            destino.email = usr.email
+            destino.email = usr.user!.email
             destino.suma = destinyAmount
             destino.resta = originAmount
             destino.navigationItem.hidesBackButton = true
-            FirebaseManager.shared.setUserData(user: usr)
+            FirebaseManager.shared.setUserData(user: usr.user!)
         }
     }
     
     func doTransaction() -> (String?,String?) {
-        if let originAmount = originField.text, let destinyAmount = destinyField.text, let usr = user {
+        guard let user = userViewModel?.user! else { return (nil,nil)  }
+        if let originAmount = originField.text, let destinyAmount = destinyField.text {
             if let oCurrency = originCurrency {
                 oCurrency.amount -=  (Double(originAmount) ?? 0)
                 var exists:Bool = false
                 
-                for myWallet in usr.wallet {
+                for myWallet in user.wallet {
                     if myWallet.country == destinyCurrency!.country {
                         exists = true
                         destinyCurrency = myWallet
@@ -193,7 +192,7 @@ class NewTrader: ProtocolsViewController {
                 
                 if exists == false {
                     destinyCurrency!.amount += (Double(destinyAmount) ?? 0)
-                    usr.wallet.append(destinyCurrency!)
+                    user.wallet.append(destinyCurrency!)
                 }
                 else {
                     destinyCurrency!.amount += (Double(destinyAmount) ?? 0)
