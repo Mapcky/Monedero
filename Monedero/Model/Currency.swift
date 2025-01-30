@@ -10,13 +10,12 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 class Currency :Codable {
-    
-    var amount : Float
+    var amount : Double
     var country : Country
     var isActive : Bool
     
     
-    init(amount: Float, country: Country, isActive: Bool){
+    init(amount: Double, country: Country, isActive: Bool){
         self.amount = amount
         self.country = country
         self.isActive = isActive

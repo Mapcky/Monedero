@@ -34,9 +34,8 @@ class End: UIViewController {
             downLabel.text = minus
             plusLabel.text = plus
         }
-        
     }
-
+    
     @IBOutlet weak var controller: UINavigationItem!
     
     //Vuelta a la pantalla main, se le envia el email como dato para que esta otra pueda volver a cargar los datos directamente desde firebase en lugar de poder enviar datos erroneos

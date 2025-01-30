@@ -49,7 +49,7 @@ class RegisterViewController: ProtocolsViewController {
                 (result, error) in
                 if error == nil {
                     
-                    self.selectedCurrency = Currency(amount: (Float (money) ?? 0.0), country: sCountry, isActive: true)
+                    self.selectedCurrency = Currency(amount: (Double (money) ?? 0.0), country: sCountry, isActive: true)
                     let wallet : [Currency] = [self.selectedCurrency!]
                     self.user = User(email: email, name: name, wallet: wallet)
                     

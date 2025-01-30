@@ -9,10 +9,9 @@ import UIKit
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-
 class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    //Outlets
+    // MARK: - Outlets
     @IBOutlet weak var profileButton: UIButton!
     @IBOutlet weak var navigation: UINavigationItem!
     @IBOutlet weak var loading: UIActivityIndicatorView!
@@ -20,13 +19,12 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     @IBOutlet weak var tradeB: UIButton!
     @IBOutlet weak var depositB: UIButton!
     
-    //Variables
-    private var user :User?
+    // MARK: - PROPERTIES
+    private var viewModel = UserViewModel()
+    private var conversionVM = UsdConversionViewModel()
     var email: String?
-    private var usdConversions : ConversionResult?
-    private var myCotizations : [Cotization] = []
-    private let enumCountries = Country.allCases
 
+    // MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         loading.startAnimating()
@@ -39,42 +37,26 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         depositB.isHidden = true
         
         if let email = email {
-            FirebaseManager.shared.getUserData(email: email) {usr, error in
-                if let error = error {
-                    print("Error fetching resources: \(error)")
-                    return
-                }
+            self.viewModel.getUserData(email: email)
+            viewModel.dataRetrieved.bind(to: self) { _ in
                 // Una vez que los datos se hayan cargado, actualiza la vista
-                if let user = usr {
-                    self.user = usr
-                    self.loading.stopAnimating()
-                    self.loading.isHidden = true
-                    self.collectionView.reloadData()
-                    self.profileButton.setTitle("Hola \(user.name)", for: .normal)
-                    self.profileButton.isHidden = false
-                    self.tradeB.isHidden = false
-                    self.depositB.isHidden = false
-                }
+                self.profileButton.setTitle("Hola \(self.viewModel.user?.name ?? "")", for: .normal)
+                self.loading.stopAnimating()
+                self.loading.isHidden = true
+                self.collectionView.reloadData()
+                self.profileButton.isHidden = false
             }
+            //: Fb getUser
+            
+            conversionVM.getConversions()
+            conversionVM.dataRetrieved.bind(to: self) { _ in
+                self.tradeB.isHidden = false
+                self.depositB.isHidden = false
+            }
+
         }
-        FirebaseManager.shared.getResources{ apiURL, apiKey, error in
-            if let error = error {
-                print("Error fetching resources: \(error)")
-                return
-            }
-            // Deshabilitar los botones antes de iniciar la tarea
-            self.tradeB.isEnabled = false
-            self.depositB.isEnabled = false
-            // Desempaquetado de apiURL y apiKey
-            if let apiURL = apiURL, let apiKey = apiKey {
-                self.getCotizations(apiURL: apiURL, apiKey: apiKey) { [weak self] in
-                    self?.makeCotziationsArray(apiURL: apiURL, apiKey: apiKey)
-                }
-            } else {
-                print("Error: apiURL or apiKey is nil")
-            }
-        }
-    }
+
+    }//: ViewDidLoad
 
     @IBAction func depositAction(_ sender: Any) {
         performSegue(withIdentifier: "deposit", sender: sender)
@@ -93,18 +75,18 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         //Se envian wallet y email para el actual funcionamiento de NewTrader
         if let destino = segue.destination as? NewTrader, let buttonPressed = sender as? UIButton {
             if buttonPressed.tag == 0{
-                destino.user = user!
-                destino.myCotizations = myCotizations
+                destino.user = viewModel.user
+                destino.myCotizations = conversionVM.cotizations
             }
         }
         if let destino = segue.destination as? DepositView, let buttonPressed = sender as? UIButton {
             if buttonPressed.tag == 1{
-                destino.user = user!
+                destino.user = viewModel.user
             }
         }
         if let destino = segue.destination as? ProfileViewController, let buttonPressed = sender as? UIButton {
             if buttonPressed.tag == 2{
-                destino.name = user?.name
+                destino.name = viewModel.user?.name
             }
         }
     }
@@ -113,7 +95,7 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     //Creacion de numero de tarjetas, segun cuantos items pertenezcan a el array de Currency
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         var count = 0
-        if let user = user {
+        if let user = viewModel.user {
             for wallet in user.wallet {
                 if wallet.isActive == true {
                     count += 1
@@ -127,7 +109,7 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     //Creacion de cada Cell del CollectionView, se da formato a labels y forma de la cell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         // Filtrar los elementos del arreglo currency donde isActive es true
-        let activeCurrencies = user?.wallet.filter { $0.isActive == true }
+        let activeCurrencies = viewModel.user?.wallet.filter { $0.isActive == true }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CustomCell", for: indexPath) as! MyCollectionViewCell
         cell.countryLabel.text = activeCurrencies?[indexPath.row].country.rawValue
         cell.moneyLabel.text = "$ \(String(format: "%.2f",activeCurrencies?[indexPath.row].amount ?? 0))"
@@ -149,63 +131,6 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         return 20 // espacio entre celdas
     }
     
-    // MARK: - getCotizations
-    //Obtiene el JSON de la API y lo decodifica
-    func getCotizations(apiURL:String, apiKey:String, completion: @escaping () -> Void) {
-        // La URL de la API
-        let apiURLString = apiURL + apiKey
-
-        // Crear la URL a partir de la cadena
-        guard let url = URL(string: apiURLString) else {
-            print("URL inválida")
-            return
-        }
-        // Crear una tarea de URLSession para obtener los datos JSON
-        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            // Manejar cualquier error
-            if let error = error {
-                print("Error al obtener datos:", error)
-                return
-            }
-            // Verificar si los datos existen
-            guard let jsonData = data else {
-                print("Datos no encontrados")
-                return
-            }
-            do {
-                // Decodificar los datos JSON en la estructura definida
-                self.usdConversions = try JSONDecoder().decode(ConversionResult.self, from: jsonData)
-                
-                DispatchQueue.main.async {
-                    self.tradeB.isEnabled = true
-                    self.depositB.isEnabled = true
-                }
-                
-                // Llamar a la clausura de finalización después de que se hayan procesado los datos
-                completion()
-            } catch {
-                print("Error al decodificar el JSON:", error)
-            }
-        }
-        task.resume()
-    }
-    
-    //MARK: - money
-   //Obtiene las cotizaciones necesarias segun los elementos existentes en el enum Country
-    func makeCotziationsArray(apiURL:String , apiKey:String) {
-        if let conv = usdConversions?.result.conversion{
-            for con in conv {
-                if enumCountries.contains(where: { whale in
-                    //Caso particular, buscar otra solucion
-                    return whale.rawValue.contains(con.to) && con.to != "AR"
-                }) {
-                    myCotizations.append(Cotization(value: Float(1 / con.rate), country: con.to))
-                    print(myCotizations.last!.country)
-                }
-            }
-        }
-//        myCotizations.append(Cotization(value: 1, country: "USD"))
-    }
     
     //Accion ir a perfil usuario
     @IBAction func goProfile(_ sender: Any) {

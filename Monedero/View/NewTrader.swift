@@ -76,10 +76,10 @@ class NewTrader: ProtocolsViewController {
         
         if let conversion = myCotizations {
             for conv in conversion {
-                if originCurrency!.country.rawValue.contains(conv.country) {
+                if originCurrency!.country.rawValue == conv.country.rawValue {
                     leftCountry = conv
                 }
-                if destinyCurrency!.country.rawValue.contains(conv.country) {
+                if destinyCurrency!.country.rawValue == conv.country.rawValue {
                     rightCountry = conv
                 }
             }
@@ -96,21 +96,23 @@ class NewTrader: ProtocolsViewController {
             
             switch fieldModify.tag {
             case 0:
-                if (Float (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Float (originField.text ?? "0") ?? 0) <= 0  || countryLeftButton.currentTitle == countryRightButton.currentTitle{
+                if (Double (originField.text ?? "0") ?? 0) > originCurrency!.amount
+                    ||
+                    (Double (originField.text ?? "0") ?? 0) <= 0  || countryLeftButton.currentTitle == countryRightButton.currentTitle{
                     exchangeButton.isEnabled = false
                 }
                 else {
                     exchangeButton.isEnabled = true
                 }
-                let calculo = (Float(originField.text!) ?? 0) * (leftCountry?.value ?? 0)
+                let calculo = (Double(originField.text!) ?? 0) * (leftCountry?.value ?? 0)
                 destinyField.text = String(format: "%.3f",calculo / (rightCountry?.value ?? 0))
                 break
                 
             case 1:
-                let calculo2 = (Float(destinyField.text!) ?? 0) * (rightCountry?.value ?? 0)
+                let calculo2 = (Double(destinyField.text!) ?? 0) * (rightCountry?.value ?? 0)
                 originField.text = String(format: "%.3f",calculo2 / (leftCountry?.value ?? 0))
                 
-                if (Float (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Float (destinyField.text ?? "0") ?? 0) <= 0  || countryLeftButton.currentTitle == countryRightButton.currentTitle{
+                if (Double (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Double (destinyField.text ?? "0") ?? 0) <= 0  || countryLeftButton.currentTitle == countryRightButton.currentTitle{
                     exchangeButton.isEnabled = false
                 }
                 else {
@@ -148,10 +150,10 @@ class NewTrader: ProtocolsViewController {
         }
         if let cotization = myCotizations {
             for conv in cotization {
-                if countryLeftButton.currentTitle!.contains( conv.country){
+                if countryLeftButton.currentTitle!.contains( conv.country.rawValue){
                     leftCountry = conv
                 }
-                if countryRightButton.currentTitle!.contains(conv.country) {
+                if countryRightButton.currentTitle!.contains(conv.country.rawValue) {
                     rightCountry = conv
                 }
             }
@@ -179,7 +181,7 @@ class NewTrader: ProtocolsViewController {
     func doTransaction() -> (String?,String?) {
         if let originAmount = originField.text, let destinyAmount = destinyField.text, let usr = user {
             if let oCurrency = originCurrency {
-                oCurrency.amount -=  (Float(originAmount) ?? 0)
+                oCurrency.amount -=  (Double(originAmount) ?? 0)
                 var exists:Bool = false
                 
                 for myWallet in usr.wallet {
@@ -190,11 +192,11 @@ class NewTrader: ProtocolsViewController {
                 }
                 
                 if exists == false {
-                    destinyCurrency!.amount += (Float(destinyAmount) ?? 0)
+                    destinyCurrency!.amount += (Double(destinyAmount) ?? 0)
                     usr.wallet.append(destinyCurrency!)
                 }
                 else {
-                    destinyCurrency!.amount += (Float(destinyAmount) ?? 0)
+                    destinyCurrency!.amount += (Double(destinyAmount) ?? 0)
                 }
                 return (originAmount,destinyAmount)
             }

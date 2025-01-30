@@ -10,11 +10,11 @@ import Foundation
 
 class Cotization {
     
-    var value: Float
-    var country : String
+    var value: Double
+    var country : Country
     
     
-    init(value: Float, country: String) {
+    init(value: Double, country: Country) {
         self.value = value
         self.country = country
     }

@@ -76,11 +76,11 @@ class DepositView: ProtocolsViewController {
                 }
                 
                 if exists == false {
-                    selectedCurrency!.amount = (Float(inputMoney) ?? 0)
+                    selectedCurrency!.amount = (Double(inputMoney) ?? 0)
                     usr.wallet.append(selectedCurrency!)
                 }
                 else {
-                    selectedCurrency!.amount += (Float(inputMoney) ?? 0)
+                    selectedCurrency!.amount += (Double(inputMoney) ?? 0)
                 }
                 return (inputMoney)
         }
