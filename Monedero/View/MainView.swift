@@ -89,9 +89,9 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
     
     private func prepareForDepositView(_ segue: UIStoryboardSegue) {
         guard let destino = segue.destination as? DepositView else { return }
-        destino.user = viewModel.user
+        destino.viewModel = viewModel
     }
-
+    
     private func prepareForProfileView(_ segue: UIStoryboardSegue) {
         guard let destino = segue.destination as? ProfileViewController else { return }
         destino.name = viewModel.user?.name
@@ -154,15 +154,13 @@ class MainView: UIViewController, UICollectionViewDataSource, UICollectionViewDe
         return 20 // espacio entre celdas
     }
     
-
+    
     
     //Se oculta la navigationBar durante le proceso de viewWillAppear para que no tenga probelmas con el boton perfil
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
     }
-    
-    
 }
 
 extension UIViewController {

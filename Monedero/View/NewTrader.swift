@@ -54,40 +54,28 @@ class NewTrader: ProtocolsViewController {
     //Armado de las menu actions de los botones
     func setUpCountryButtons() {
         guard let wallet = userViewModel?.activeCurrencies else { return }
-        for selector in wallet {
-            let actionB1 = UIAction(title : selector.country.rawValue, handler: { action in self.handleMenuSelection(selector.country.rawValue)})
-            menuActionsButtonLeft.append(actionB1)
-        }
         
-        for selector in enumCountries {
-            let actionB2 = UIAction(title : selector.rawValue, handler: {action in self.handleMenuSelection(selector.rawValue) })
-            menuActionsButtonRight.append(actionB2)
-        }
-        
-        
-        let menub1 = UIMenu(children: menuActionsButtonLeft)
-        let menub2 = UIMenu(children: menuActionsButtonRight)
-        countryLeftButton.menu = menub1
-        countryRightButton.menu = menub2
-        
-        originCurrency = wallet.first
-        
-        
-        //Currency de la derecha, cambiara sus atributos segun su uso
-        destinyCurrency = Currency(amount: 0, country: .Ars, isActive: true)
-        
-        if let conversions = myCotizations {
-            for conversion in conversions {
-                if originCurrency!.country.rawValue == conversion.country.rawValue {
-                    leftCountry = conversion
-                }
-                if destinyCurrency!.country.rawValue == conversion.country.rawValue {
-                    rightCountry = conversion
-                }
+        menuActionsButtonLeft = wallet.map { currency in
+            UIAction(title: currency.country.rawValue) { _ in
+                self.handleMenuSelection(currency.country.rawValue)
             }
         }
+        
+        
+        menuActionsButtonRight = enumCountries.map { country in
+            UIAction(title: country.rawValue) { _ in
+                self.handleMenuSelection(country.rawValue)
+            }
+        }
+        
+        countryLeftButton.menu = UIMenu(children: menuActionsButtonLeft)
+        countryRightButton.menu = UIMenu(children: menuActionsButtonRight)
+        
+        originCurrency = wallet.first
+        destinyCurrency = Currency(amount: 0, country: .Ars, isActive: true)
+        
+        (leftCountry, rightCountry) = userViewModel?.updateCotizations(for: originCurrency?.country ?? .Ars, destinyCountry: destinyCurrency?.country ?? .Ars, cotizations: myCotizations ?? []) ?? (nil, nil)
     }
-    
     
     
     //MARK: - editingField
@@ -95,12 +83,9 @@ class NewTrader: ProtocolsViewController {
     //Control de los Fields
     @IBAction func editingField(_ sender: Any) {
         if let fieldModify = sender as? UITextField {
-            
             switch fieldModify.tag {
             case 0:
-                if (Double (originField.text ?? "0") ?? 0) > originCurrency!.amount
-                    ||
-                    (Double (originField.text ?? "0") ?? 0) <= 0  || countryLeftButton.currentTitle == countryRightButton.currentTitle{
+                if (Double (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Double (originField.text ?? "0") ?? 0) <= 0 || countryLeftButton.currentTitle == countryRightButton.currentTitle{
                     exchangeButton.isEnabled = false
                 }
                 else {
@@ -108,12 +93,12 @@ class NewTrader: ProtocolsViewController {
                 }
                 let calculo = (Double(originField.text!) ?? 0) * (leftCountry?.value ?? 0)
                 destinyField.text = String(format: "%.3f",calculo / (rightCountry?.value ?? 0))
-                                
-            case 1:
-                let calculo2 = (Double(destinyField.text!) ?? 0) * (rightCountry?.value ?? 0)
-                originField.text = String(format: "%.3f",calculo2 / (leftCountry?.value ?? 0))
                 
-                if (Double (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Double (destinyField.text ?? "0") ?? 0) <= 0  || countryLeftButton.currentTitle == countryRightButton.currentTitle{
+            case 1:
+                let calculo = (Double(destinyField.text!) ?? 0) * (rightCountry?.value ?? 0)
+                originField.text = String(format: "%.3f",calculo / (leftCountry?.value ?? 0))
+                
+                if (Double (originField.text ?? "0") ?? 0) > originCurrency!.amount || (Double (destinyField.text ?? "0") ?? 0) <= 0 || countryLeftButton.currentTitle == countryRightButton.currentTitle{
                     exchangeButton.isEnabled = false
                 }
                 else {
@@ -126,10 +111,11 @@ class NewTrader: ProtocolsViewController {
     }
     
     
-    
     @IBAction func exchangeAction(_ sender: Any) {
-        guard let oAmount = originField.text, let dAmount = destinyField.text, let oCurrency = originCurrency, let dCurrency = destinyCurrency else { return }
-        userViewModel?.doTransaction(originAmount: oAmount, destinyAmount: dAmount, selectedOriginCurrency: oCurrency, selectedDestinyCurrency: dCurrency)
+        guard let oAmount = originField.text, let dAmount = destinyField.text, let oCurrency = originCurrency, let dCurrency = destinyCurrency,
+              let viewModel = userViewModel else { return }
+        
+        viewModel.doTransaction(originAmount: oAmount, destinyAmount: dAmount, selectedOriginCurrency: oCurrency, selectedDestinyCurrency: dCurrency)
         exchangeButton.isEnabled = false
     }
     
@@ -137,42 +123,25 @@ class NewTrader: ProtocolsViewController {
     //MARK: - HandleMenuSelection
     //Se Ejecuta cada vez que se cambia la opcion seleccionada de los menues
     func handleMenuSelection(_ option: String) {
-        // Obtiene el título del botón cuando una opcion es seleccionada
         guard let wallet = userViewModel?.activeCurrencies else { return }
+        
         exchangeButton.isEnabled = false
-        for aCurrency in wallet {
-            if countryLeftButton.currentTitle == aCurrency.country.rawValue {
-                originCurrency = aCurrency
-            }
-        }
-        for enums in enumCountries {
-            if countryRightButton.currentTitle == enums.rawValue {
-                destinyCurrency!.country = enums
-            }
-        }
-        if let cotization = myCotizations {
-            for conv in cotization {
-                if countryLeftButton.currentTitle! == conv.country.rawValue {
-                    leftCountry = conv
-                }
-                if countryRightButton.currentTitle! == conv.country.rawValue {
-                    rightCountry = conv
-                }
-            }
-            destinyField.text = ""
-            originField.text = ""
-        }
+        originCurrency = wallet.first(where: { $0.country.rawValue == countryLeftButton.currentTitle })
+        destinyCurrency?.country = enumCountries.first(where: { $0.rawValue == countryRightButton.currentTitle }) ?? .Ars
+        (leftCountry, rightCountry) = userViewModel?.updateCotizations(for: originCurrency?.country ?? .Ars, destinyCountry: destinyCurrency?.country ?? .Ars, cotizations: myCotizations ?? []) ?? (nil, nil)
+        destinyField.text = ""
+        originField.text = ""
     }
+    
     
     
     //MARK: - prepare
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destino = segue.destination as? End , let usr = userViewModel {
-            guard let dAmount = destinyField.text, let oAmount = originField.text else { return }
+        if let destino = segue.destination as? End, let userViewModel = userViewModel {
             destino.navigationItem.hidesBackButton = true
-            destino.email = usr.user!.email
-            destino.suma = dAmount
-            destino.resta = oAmount
+            destino.email = userViewModel.user?.email
+            destino.suma = destinyField.text ?? "0"
+            destino.resta = originField.text ?? "0"
         }
     }
     

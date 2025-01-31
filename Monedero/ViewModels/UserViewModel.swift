@@ -25,6 +25,11 @@ class UserViewModel: ObservableObject {
         return user?.wallet.filter { $0.isActive == true } ?? []
     }
     
+    var email: String {
+        guard let email = self.user?.email else { return "" }
+        return email
+    }
+    
     // MARK: - GetData
     func getUserData(email: String) {
         // Obtener el documento especificado por el correo electrónico
@@ -146,6 +151,61 @@ class UserViewModel: ObservableObject {
             }
         }
     }
+    
+    
+    // MARK: - UPDATE
+    func deposit(input: String, selectedCurrency: Currency) {
+        guard let input = Double(input), let user = self.user else { return }
+        var currency = activeCurrencies.first(where: { $0.country == selectedCurrency.country })
+        
+        if currency == nil {
+            currency = Currency(amount: 0, country: selectedCurrency.country, isActive: true)
+            user.wallet.append(currency!)
+        }
+            currency?.amount += input
 
+        
+        DispatchQueue.main.async {
+            let userRef = self.db.collection("Users").document(user.email)
+            do {
+                try userRef.setData(from: user)
+                self.dataRetrieved.notify(with: ())
+                
+            } catch let error {
+                print("Error adding user: \(error)")
+            }
+        }
+    }
 
+    /*
+    // MARK: - FieldsOnNewTrader
+    func validateAndCalculate(originAmount: String?, destinyAmount: String?, leftCotization: Cotization?, rightCotization: Cotization?) -> (String, Bool) {
+        guard let origin = originAmount, let destiny = destinyAmount, let left = leftCotization, let right = rightCotization else { return ("0", false) }
+        
+        let originValue = Double(origin) ?? 0
+        let destinyValue = Double(destiny) ?? 0
+        
+        var calculatedValue: Double = 0
+        var isValid = false
+        
+        if originValue > 0 {
+            calculatedValue = (originValue * left.value) / right.value
+            isValid = originValue <= (self.activeCurrencies.first { $0.country == left.country }?.amount ?? 0)
+        } else if destinyValue > 0 {
+            calculatedValue = (destinyValue * right.value) / left.value
+            isValid = destinyValue > 0
+        }
+        
+        return (String(format: "%.3f", calculatedValue), isValid)
+    }
+     */
+    
+    
+    func updateCotizations(for originCountry: Country, destinyCountry: Country, cotizations: [Cotization]) -> (Cotization?, Cotization?) {
+        let left = cotizations.first(where: { $0.country == originCountry })
+        let right = cotizations.first(where: { $0.country == destinyCountry })
+        return (left, right)
+    }
+
+    
 }

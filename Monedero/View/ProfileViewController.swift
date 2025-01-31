@@ -8,7 +8,7 @@
 import UIKit
 
 class ProfileViewController: UIViewController {
-
+    
     @IBOutlet weak var nameLabel: UILabel!
     
     var name: String?
@@ -25,7 +25,7 @@ class ProfileViewController: UIViewController {
             destino.navigationItem.hidesBackButton = true
         }
     }
-
+    
     @IBAction func logOut(_ sender: Any) {
         performSegue(withIdentifier: "exit", sender: sender)
     }

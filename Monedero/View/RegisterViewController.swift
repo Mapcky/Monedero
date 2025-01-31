@@ -22,7 +22,6 @@ class RegisterViewController: ProtocolsViewController {
     
     //Variables
     private var viewModel = UserViewModel()
-    var selectedCountry : Country?
     var selectedCurrency : Currency?
     private var menuActions = [UIAction]()
     private let enumCountries = Country.allCases
@@ -42,7 +41,7 @@ class RegisterViewController: ProtocolsViewController {
         }
         
         viewModel.dataRetrieved.bind(to: self) { [weak self] _ in
-            guard let self = self else { return }
+            guard let self = self, self.isViewLoaded, self.view.window != nil else { return }
             self.performSegue(withIdentifier: "2Main", sender: nil)
         }
     }
@@ -50,22 +49,21 @@ class RegisterViewController: ProtocolsViewController {
     
     
     
-    //MARK: - deposit
-    
-    //Funcion deposit, obtiene los datos de los textfield y los guarda en firebase bajo el email obtenido en LoginViewController
-    @IBAction func deposit(_ sender: Any) {
+    //MARK: - register
+    @IBAction func register(_ sender: Any) {
         guard let email = emailField.text, !email.isEmpty,
               let pass = passField.text, !pass.isEmpty,
               let name = nameField.text, !name.isEmpty,
               let moneyText = moneyInput.text, !moneyText.isEmpty,
               let money = Double(moneyText), money > 0,
-              let sCountry = selectedCountry else {
-                  self.showAlert(title: "Error", message: "Todos los campos son obligatorios y la cantidad debe ser válida.")
-                  return
+              let sCurrency = selectedCurrency
+        else {
+            self.showAlert(title: "Error", message: "Todos los campos son obligatorios y la cantidad debe ser válida.")
+            return
         }
         
-        let wallet = Currency(amount: money, country: sCountry, isActive: true)
-    
+        let wallet = Currency(amount: money, country: sCurrency.country, isActive: true)
+        
         viewModel.register(email: email, password: pass, name: name, wallet: wallet)
     }
     
@@ -85,27 +83,25 @@ class RegisterViewController: ProtocolsViewController {
     
     //Se crean los items del menu desplegable del boton y liga dicho menú a este
     func setMenuButton() {
-        for selector in enumCountries{
-            let action = UIAction(title : selector.rawValue, handler: {action in self.handleMenuSelection(selector.rawValue)})
-            menuActions.append(action)
+        menuActions = enumCountries.map { country in
+            UIAction(title: country.rawValue) { _ in
+                self.handleMenuSelection(country.rawValue)
+            }
         }
+        selectedCurrency = Currency(amount: 0, country: .Ars, isActive: true)
         let menu = UIMenu(children: menuActions)
         menuButton.menu = menu
-        selectedCountry = enumCountries.first
     }
     
     
     //MARK: - HandleMenuSelection
     //Se Ejecuta cada vez que se cambia la opcion seleccionada de los menues
     func handleMenuSelection(_ option: String) {
-        // busca el enum que coincida con el actual seleccionado por el boton
-        for enums in enumCountries {
-            if menuButton.currentTitle == enums.rawValue {
-                selectedCountry = enums
-            }
+        if let selected = enumCountries.first(where: { $0.rawValue == option }) {
+            selectedCurrency?.country = selected
         }
     }
-
+    
     
     override func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // Solo el moneyInput necesita la validación numérica
@@ -114,6 +110,5 @@ class RegisterViewController: ProtocolsViewController {
         }
         return true
     }
-    
 }
 

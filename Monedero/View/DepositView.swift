@@ -13,7 +13,7 @@ class DepositView: ProtocolsViewController {
     @IBOutlet weak var countryButton: UIButton!
     @IBOutlet weak var depositButton: UIButton!
     
-    var user :User?
+    var viewModel :UserViewModel?
     private let enumCountries = Country.allCases
     private var menuActions = [UIAction]()
     private var selectedCurrency :Currency?
@@ -24,18 +24,30 @@ class DepositView: ProtocolsViewController {
         navigationController?.setNavigationBarHidden(false, animated: false)
         setPopButton()
         inputMoneyField.delegate = self
-
+        
+        viewModel?.dataRetrieved.bind(to: self) { [weak self] _ in
+            guard let self = self else { return }
+            self.performSegue(withIdentifier: "endFromDeposit", sender: nil)
+        }
     }
     
     @IBAction func depositAction(_ sender: Any) {
-        performSegue(withIdentifier: "endFromDeposit", sender: sender)
+        guard let inputMoney = inputMoneyField.text,
+              let money = Double(inputMoney), money > 0,
+              let currency = selectedCurrency else {
+            self.showAlert(title: "Error", message: "Ingrese una cantidad válida.")
+            return
+        }
+        
+        viewModel?.deposit(input: inputMoney, selectedCurrency: currency)
+        depositButton.isEnabled = false
     }
     
     func setPopButton() {
-        
-        for selector in enumCountries{
-            let actions = UIAction(title : selector.rawValue, handler: {action in self.handleMenuSelection(selector.rawValue) })
-            menuActions.append(actions)
+        menuActions = enumCountries.map { country in
+            UIAction(title: country.rawValue) { _ in
+                self.handleMenuSelection(country.rawValue)
+            }
         }
         selectedCurrency = Currency(amount: 0, country: .Ars, isActive: true)
         let menu = UIMenu(children: menuActions)
@@ -45,60 +57,29 @@ class DepositView: ProtocolsViewController {
     //MARK: - HandleMenuSelection
     //Se Ejecuta cada vez que se cambia la opcion seleccionada de los menues
     func handleMenuSelection(_ option: String) {
-        // Obtiene el título del botón cuando una opcion es seleccionada
-        for enums in enumCountries {
-            if countryButton.currentTitle == enums.rawValue {
-                selectedCurrency!.country = enums
-            }
+        if let selected = enumCountries.first(where: { $0.rawValue == option }) {
+            selectedCurrency?.country = selected
         }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destino = segue.destination as? End ,let usr = user{
-            let (inputMoney) = doTransaction()
+        if let destino = segue.destination as? End ,let usr = viewModel{
             destino.email = usr.email
-            destino.suma = inputMoney
+            destino.suma = inputMoneyField.text
             destino.resta = ""
             destino.navigationItem.hidesBackButton = true
-            //FirebaseManager.shared.setUserData(user: usr)
         }
     }
-    
-    func doTransaction() -> (String?) {
-        if let inputMoney = inputMoneyField.text, let usr = user {
-                var exists:Bool = false
-                
-                for myWallet in usr.wallet {
-                    if myWallet.country == selectedCurrency!.country {
-                        exists = true
-                        selectedCurrency = myWallet
-                    }
-                }
-                
-                if exists == false {
-                    selectedCurrency!.amount = (Double(inputMoney) ?? 0)
-                    usr.wallet.append(selectedCurrency!)
-                }
-                else {
-                    selectedCurrency!.amount += (Double(inputMoney) ?? 0)
-                }
-                return (inputMoney)
-        }
-        return(nil)
-    }
-    
     
     //MARK: - editingField
     
     //Control de los Fields
     @IBAction func editingField(_ sender: Any) {
-        if (Float (inputMoneyField.text ?? "0") ?? 0) <= 0 {
+        guard let text = inputMoneyField.text, let amount = Double(text), amount > 0 else {
             depositButton.isEnabled = false
+            return
         }
-        else {
-            depositButton.isEnabled = true
-        }
-        
+        depositButton.isEnabled = true
     }
     
 }
